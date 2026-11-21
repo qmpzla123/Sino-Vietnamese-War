@@ -1,0 +1,2147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a0e13">
+<title>对越自卫反击战 1979 · 时空沙盒</title>
+<style>
+:root{
+  --bg:#0a0e13;--panel:#121820;--panel2:#172029;--line:#243040;
+  --txt:#e8eef6;--dim:#8fa0b4;--dim2:#64748b;
+  --amber:#f0b34a;--red:#e2604f;--blue:#5fa8d3;--violet:#a78bfa;--green:#4ade80;
+  --cn:#e2543f;--vn:#5fa8d3;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--txt);
+  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  -webkit-text-size-adjust:100%;line-height:1.6}
+body{background-image:radial-gradient(1200px 600px at 70% -10%,#16202b 0%,transparent 60%),radial-gradient(900px 500px at 0% 110%,#131a22 0%,transparent 55%);background-attachment:fixed}
+.wrap{max-width:1180px;margin:0 auto;padding:16px 14px 48px}
+
+/* ---------- header ---------- */
+.hd{padding:6px 2px 14px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.hd-top{display:flex;align-items:flex-start;gap:10px}
+h1{margin:0;font-size:clamp(19px,5.2vw,26px);letter-spacing:.5px;font-weight:700}
+h1 span{color:var(--amber);font-variant-numeric:tabular-nums}
+.ver{font-size:9.5px;color:#4d6070;border:1px solid #22303f;border-radius:999px;padding:1px 6px;vertical-align:3px;margin-left:6px;letter-spacing:.5px}
+.sub{margin:6px 0 0;color:var(--dim);font-size:12.5px}
+.sub em{font-style:normal;color:var(--dim2)}
+.ghost{margin-left:auto;flex:0 0 auto;width:32px;height:32px;border-radius:50%;border:1px solid var(--line);
+  background:var(--panel);color:var(--dim);font-size:14px;font-family:Georgia,serif;cursor:pointer}
+.ghost:active{background:var(--panel2)}
+.disc{margin:10px 0 0;padding:8px 10px;border-radius:10px;background:#131b23;border:1px solid #1e2937;
+  color:#93a3b7;font-size:11.5px}
+
+/* ---------- era tabs ---------- */
+.eras{display:flex;gap:7px;overflow-x:auto;padding:12px 0 2px;scrollbar-width:none}
+.eras::-webkit-scrollbar{display:none}
+.era{flex:0 0 auto;padding:7px 13px;border-radius:999px;border:1px solid var(--line);background:var(--panel);
+  color:var(--dim);font-size:13px;cursor:pointer;white-space:nowrap;transition:.18s}
+.era b{font-weight:600;display:block;font-size:13px;color:inherit}
+.era i{display:block;font-style:normal;font-size:10px;opacity:.7;margin-top:1px}
+.era[aria-selected="true"]{background:linear-gradient(180deg,#2a2318,#1c2230);border-color:#4a3c22;color:var(--amber);box-shadow:0 0 0 1px #3a2f1c inset}
+
+/* ---------- stage ---------- */
+.stage{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
+@media(min-width:940px){.stage{grid-template-columns:1.15fr 1fr;align-items:start}}
+.mapcard{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.maphead{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line);
+  font-size:12px;color:var(--dim)}
+.maphead .badge{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--amber);
+  background:#221c10;border:1px solid #3d301a;padding:2px 8px;border-radius:999px;font-size:11.5px}
+svg#map{display:block;width:100%;height:auto;background:#0c1319;touch-action:manipulation}
+.mapnote{padding:9px 12px 0;font-size:11.5px;color:#7f92a5;line-height:1.65}
+.mapnote:empty{display:none}
+.mapfoot{display:flex;flex-wrap:wrap;gap:8px 14px;padding:8px 12px 10px;border-top:1px solid var(--line);
+  font-size:10.5px;color:var(--dim2)}
+.mapfoot span{display:inline-flex;align-items:center;gap:5px}
+.lg{width:8px;height:8px;border-radius:50%;display:inline-block}
+.lg.cn{background:var(--cn)}.lg.vn{background:transparent;border:1.6px solid var(--vn)}
+.lg.hit{background:var(--amber)}.lg.fall{background:#e2543f;box-shadow:inset 0 0 0 1.5px #ffd0c6}
+.lg.line{width:14px;height:0;border-top:1.5px dashed #6b7c8f;border-radius:0}
+
+/* map labels */
+#map text{font-family:inherit;user-select:none;pointer-events:none}
+.t-city,.t-axis,.t-sea{stroke:#0b1218;stroke-width:4px;paint-order:stroke;stroke-linejoin:round}
+.t-country{font-size:34px;font-weight:700;fill:#2b3a4b;letter-spacing:8px}
+.t-prov{font-size:21px;fill:#33465a;letter-spacing:3px}
+.t-sea{font-size:19px;fill:#3a6f85;letter-spacing:3px}
+.t-city{font-size:19px;fill:#b9c7d6}
+.t-city.big{font-size:21px;fill:#dbe6f2;font-weight:600}
+.t-axis{font-size:17px;fill:#e08a6d;letter-spacing:2px}
+.t-note{font-size:14px;fill:#4d6070}
+.city-dot{transition:fill .3s}
+.pin{transition:fill .3s,stroke .3s}
+@media(prefers-reduced-motion:no-preference){
+  .halo{animation:halo 1.6s ease-out infinite;transform-box:fill-box;transform-origin:center}
+  @keyframes halo{0%{opacity:.85;transform:scale(.6)}70%{opacity:0;transform:scale(2.2)}100%{opacity:0;transform:scale(2.2)}}
+  .arrow path{stroke-dasharray:6 6;animation:dash 1.1s linear infinite}
+  @keyframes dash{to{stroke-dashoffset:-24}}
+}
+
+/* ---------- panel / cards ---------- */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:0;overflow:hidden;
+  display:flex;flex-direction:column;min-height:200px}
+.panelhead{display:flex;align-items:baseline;gap:10px;padding:11px 13px;border-bottom:1px solid var(--line)}
+.panelhead .t{font-size:14px;font-weight:600;color:var(--amber)}
+.panelhead .d{margin-left:auto;font-size:11.5px;color:var(--dim);font-variant-numeric:tabular-nums}
+.cards{padding:11px;display:flex;flex-direction:column;gap:10px;overflow:auto;max-height:560px}
+@media(max-width:939px){.cards{max-height:none}}
+.card{background:var(--panel2);border:1px solid #22303f;border-left:3px solid #33465a;border-radius:12px;padding:10px 12px}
+.card.k-mil{border-left-color:var(--amber)}
+.card.k-dip{border-left-color:var(--blue)}
+.card.k-cost{border-left-color:var(--violet)}
+.card.k-bg{border-left-color:#4b5f74}
+.card-h{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--dim);margin-bottom:4px;flex-wrap:wrap}
+.card-h time{font-variant-numeric:tabular-nums;color:#c3d0de}
+.chip{font-size:10px;padding:1px 7px;border-radius:999px;background:#1d2733;border:1px solid #2b3a4b;color:#8fa0b4}
+.chip.mil{color:#f0b34a;border-color:#3d301a;background:#221c10}
+.chip.dip{color:#7cbde0;border-color:#1d3a4c;background:#10222c}
+.chip.cost{color:#b9a3f7;border-color:#332a55;background:#1b1730}
+.chip.bg{color:#9fb0c2;border-color:#2b3a4b;background:#18222c}
+.card h3{margin:2px 0 5px;font-size:14.5px;line-height:1.45;font-weight:650}
+.card p{margin:0;font-size:12.8px;color:#b8c6d5;line-height:1.68}
+.impact{margin-top:8px;padding:8px 9px;border-radius:9px;background:#0f151c;border:1px dashed #26313d}
+.impact b{display:block;font-size:10px;color:var(--green);letter-spacing:2px;margin-bottom:2px;font-weight:600}
+.impact p{font-size:12.2px;color:#9fb0c2}
+.empty{color:var(--dim2);font-size:12.5px;padding:14px;text-align:center}
+
+/* ---------- controls ---------- */
+.controls{margin-top:12px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:11px 13px}
+.ctlrow{display:flex;align-items:center;gap:11px}
+#play{flex:0 0 auto;min-width:96px;padding:8px 12px;border-radius:10px;border:1px solid #4a3c22;
+  background:linear-gradient(180deg,#2c2415,#1e2029);color:var(--amber);font-size:13px;font-weight:600;cursor:pointer}
+#play:active{transform:translateY(1px)}
+.track{position:relative;flex:1;height:26px;display:flex;align-items:center}
+#scrub{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:2px;background:#22303f;outline:none;margin:0;position:relative;z-index:2}
+#scrub::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--amber);
+  border:2px solid #0a0e13;box-shadow:0 0 0 1px #4a3c22,0 0 10px rgba(240,179,74,.5);cursor:pointer}
+#scrub::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--amber);border:2px solid #0a0e13;cursor:pointer}
+.ticks{position:absolute;inset:0;z-index:1;pointer-events:none}
+.tk{position:absolute;top:50%;width:3px;height:3px;border-radius:1px;background:#3b4b5c;transform:translate(-50%,-50%)}
+.tk.on{background:var(--amber);box-shadow:0 0 6px var(--amber)}
+.counter{flex:0 0 auto;font-size:11px;color:var(--dim2);font-variant-numeric:tabular-nums;min-width:52px;text-align:right}
+.layers{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.tg{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--dim);
+  padding:4px 9px;border-radius:999px;border:1px solid var(--line);background:#0f151c;cursor:pointer;user-select:none}
+.tg input{appearance:none;-webkit-appearance:none;width:12px;height:12px;border-radius:4px;border:1px solid #3a4a5c;margin:0;position:relative}
+.tg input:checked{background:var(--amber);border-color:var(--amber)}
+.tg input:checked::after{content:"";position:absolute;left:3px;top:1px;width:3px;height:6px;border:solid #0a0e13;border-width:0 2px 2px 0;transform:rotate(42deg)}
+.tg:has(input:checked){color:var(--amber);border-color:#4a3c22}
+
+/* ---------- event list ---------- */
+h2{font-size:13px;color:var(--dim);font-weight:600;letter-spacing:1px;margin:22px 2px 10px}
+.list{display:flex;flex-direction:column;gap:2px}
+.row{display:flex;gap:10px;align-items:baseline;padding:8px 10px;border-radius:9px;cursor:pointer;
+  border:1px solid transparent;background:#0f151c;font-size:12.5px;color:#a9b8c8}
+.row:active{background:#18222c}
+.row.cur{border-color:#3d301a;background:#1a1a16;color:var(--amber)}
+.row .dt{flex:0 0 auto;width:86px;color:var(--dim2);font-variant-numeric:tabular-nums;font-size:11.5px}
+.row .tt{flex:1;min-width:0}
+.row .k{width:5px;height:5px;border-radius:50%;flex:0 0 auto;align-self:center}
+.k-mil{background:var(--amber)}.k-dip{background:var(--blue)}.k-cost{background:var(--violet)}.k-bg{background:#4b5f74}
+
+/* ---------- data section ---------- */
+.datasec{margin-top:12px}
+.dgrid{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:820px){.dgrid{grid-template-columns:1fr 1fr}}
+.dbox{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:13px 14px}
+.dbox h3{margin:0 0 10px;font-size:13px;color:var(--amber);letter-spacing:.5px;font-weight:600}
+.dline{display:flex;gap:12px;padding:7px 0;border-bottom:1px solid #1b2531;font-size:12.4px}
+.dline:last-child{border-bottom:0}
+.dline .k{flex:0 0 96px;color:var(--dim2)}
+.dline .v{flex:1;color:#c3d0de}
+.dline .v small{color:var(--dim2);font-size:10.5px}
+.note{font-size:11.5px;color:var(--dim2);line-height:1.75}
+.recsec{margin-top:12px}
+.reclist{display:flex;flex-direction:column;gap:3px}
+.rec-sec{margin:18px 2px 5px;font-size:12px;color:var(--amber);letter-spacing:1.5px;border-bottom:1px solid #22303f;padding-bottom:5px}
+.rec{display:flex;gap:10px;padding:8px 10px;background:#0f151c;border-radius:9px}
+.rec-d{flex:0 0 76px;font-size:11.5px;color:#7f92a5;font-variant-numeric:tabular-nums;padding-top:1px}
+.rec-b{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.rec-b p{margin:0;font-size:12.2px;line-height:1.62;color:#b8c6d5}
+.rec-b b{display:inline-block;min-width:32px;font-size:10px;margin-right:7px;padding:1px 5px;border-radius:4px;text-align:center}
+.rec-b .cn b{color:#ffb0a0;background:#2a1714;border:1px solid #4a2620}
+.rec-b .vn b{color:#8fc7e3;background:#0f1e26;border:1px solid #1d3a4c}
+.rec-b .both b{color:#c8b48f;background:#1a1710;border:1px solid #3d301a}
+.phases{display:grid;gap:9px}
+.ph{background:#0f151c;border:1px solid #1f2b38;border-left:3px solid var(--amber);border-radius:9px;padding:9px 11px}
+.ph-h{display:flex;align-items:baseline;gap:9px;margin-bottom:3px}
+.ph-h b{font-size:12.5px;color:var(--amber)}
+.ph-h span{font-size:11px;color:#7f92a5;font-variant-numeric:tabular-nums}
+.ph p{margin:0;font-size:12.2px;color:#a9b8c8;line-height:1.68}
+.ph em{font-style:normal;color:#e0b978}
+@media(min-width:860px){.phases{grid-template-columns:repeat(3,1fr)}}
+.imp{padding:9px 0;border-bottom:1px solid #1b2531}
+.imp:last-child{border-bottom:0}
+.imp h4{margin:0 0 4px;font-size:12.8px;color:#dbe6f2;font-weight:600}
+.imp p{margin:0;font-size:12.3px;color:#9fb0c2}
+.imp ul{margin:4px 0 0;padding-left:17px;font-size:12.2px;color:#9fb0c2}
+.imp li{margin:2px 0}
+
+/* ---------- cinematic ---------- */
+.cine{position:fixed;inset:0;z-index:100;background:#04070a;display:none;overflow:hidden}
+.cine.on{display:block}
+.cine-stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#cmap{width:100%;height:100%;display:block}
+.cine-vig{position:absolute;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(120% 90% at 50% 45%,transparent 45%,rgba(3,6,9,.75) 100%)}
+.cine-hud{position:absolute;top:0;left:0;right:0;padding:14px 16px 26px;display:flex;align-items:center;gap:9px;z-index:5;
+  background:linear-gradient(180deg,rgba(4,7,10,.94) 10%,transparent)}
+.hud-date{font-variant-numeric:tabular-nums;font-size:15px;font-weight:700;color:var(--amber);letter-spacing:1px}
+.hud-kick{font-size:11.5px;color:#8fa0b4;letter-spacing:2px}
+.cbtn{margin-left:auto;width:30px;height:30px;border-radius:50%;border:1px solid #2b3a4b;background:#0d141b;
+  color:#9fb0c2;font-size:12px;cursor:pointer;display:grid;place-items:center}
+.cbtn:last-child{margin-left:0}
+.cine-title{position:absolute;inset:0;display:grid;place-content:center;text-align:center;z-index:6;
+  background:radial-gradient(60% 50% at 50% 50%,rgba(4,7,10,.9),rgba(4,7,10,.55));
+  transition:opacity .8s ease,visibility .8s}
+.cine-title.out{opacity:0;visibility:hidden}
+.cine-title span{display:block;font-size:13px;letter-spacing:8px;color:var(--amber)}
+.cine-title b{display:block;font-size:clamp(30px,9vw,54px);letter-spacing:6px;margin:8px 0 10px}
+.cine-title i{font-style:normal;font-size:12px;color:#7f92a5;letter-spacing:2px}
+.cine-cap{position:absolute;left:0;right:0;bottom:0;padding:60px 20px 34px;z-index:4;
+  background:linear-gradient(0deg,rgba(4,7,10,.97) 42%,rgba(4,7,10,.72) 72%,transparent)}
+.cine-cap .kick{display:inline-block;font-size:11px;letter-spacing:3px;color:var(--amber);
+  border:1px solid #4a3c22;background:#1a1610;padding:2px 9px;border-radius:999px}
+.cine-cap h2{margin:10px 0 8px;font-size:clamp(19px,5.4vw,29px);line-height:1.35;letter-spacing:.5px}
+.cine-cap p{margin:0;font-size:13px;line-height:1.72;color:#a9b8c8;max-width:660px}
+.cine-cap.anim .kick,.cine-cap.anim h2,.cine-cap.anim p{animation:capin .55s ease both}
+.cine-cap.anim h2{animation-delay:.06s}.cine-cap.anim p{animation-delay:.12s}
+@keyframes capin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.cine-stats{position:absolute;left:0;right:0;top:14%;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;
+  padding:0 16px;z-index:5;opacity:0;transition:opacity .7s;pointer-events:none}
+.cine-stats.on{opacity:1}
+.cstat{min-width:88px;padding:9px 12px;border-radius:12px;background:rgba(13,20,27,.86);border:1px solid #253544;text-align:center}
+.cstat b{display:block;font-size:20px;color:var(--amber);font-variant-numeric:tabular-nums;line-height:1.2}
+.cstat span{font-size:10.5px;color:#7f92a5}
+.cine-credit{position:absolute;right:12px;bottom:10px;z-index:6;font-size:9.5px;color:#4d6070;letter-spacing:.4px;pointer-events:none}
+.cine-bar{position:absolute;left:0;right:0;bottom:0;height:4px;background:#141c25;z-index:7;cursor:pointer}
+.cine-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8a6320,var(--amber))}
+.cine-pause{position:absolute;inset:0;display:none;place-items:center;z-index:3}
+.cine-pause.on{display:grid}
+.cine-pause span{width:64px;height:64px;border-radius:50%;border:1px solid #3a4a5c;background:rgba(10,16,22,.7);
+  display:grid;place-items:center;font-size:20px;color:var(--amber)}
+
+.cine-shade{position:absolute;inset:0;z-index:3;background:rgba(4,7,10,0);transition:background .5s ease;pointer-events:none}
+.cine-shade.on{background:rgba(4,7,10,.8)}
+.cine-flash{position:absolute;inset:0;z-index:4;background:#fff;opacity:0;pointer-events:none;mix-blend-mode:screen}
+.cine-paper{position:absolute;z-index:6;left:50%;top:47%;transform:translate(-50%,-50%) scale(.93);opacity:0;
+  pointer-events:none;transition:opacity .5s ease,transform .5s ease;width:min(272px,70vw);
+  background:#e9e3d3;color:#17181a;padding:14px 14px 9px;border-radius:2px;
+  box-shadow:0 18px 50px rgba(0,0,0,.65);font-family:"Noto Serif SC","Songti SC",Georgia,serif}
+.cine-paper.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.pp-mast{font-size:27px;font-weight:800;color:#b32020;letter-spacing:5px;text-align:center;line-height:1.1}
+.pp-rule{height:2px;background:#b32020;margin:6px 0 4px}
+.pp-date{font-size:8.5px;color:#6b6455;text-align:center;border-bottom:1px solid #c9c0aa;padding-bottom:4px;letter-spacing:.3px}
+.pp-head{font-size:19px;line-height:1.32;margin:10px 0 4px;font-weight:800;text-align:center;letter-spacing:1px}
+.pp-sub{font-size:9.5px;color:#4a463c;text-align:center;margin:0 0 9px}
+.pp-cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.pp-cols i{height:76px;background:repeating-linear-gradient(180deg,#8f8776 0 1.5px,transparent 1.5px 5px);opacity:.5}
+.pp-tag{margin-top:9px;font-size:8px;color:#8a816d;text-align:center;border-top:1px solid #c9c0aa;padding-top:5px;letter-spacing:.3px}
+.cine-cards{position:absolute;z-index:6;left:0;right:0;top:80px;padding:0 14px;display:flex;flex-direction:column;gap:8px;
+  opacity:0;transform:translateY(-10px);transition:.45s ease;pointer-events:none}
+.cine-cards.show{opacity:1;transform:none}
+.icc{background:rgba(12,19,26,.93);border:1px solid #2b3a4b;border-left:3px solid #5fa8d3;border-radius:10px;padding:8px 11px;display:flex;gap:10px}
+.icc b{flex:0 0 46px;color:var(--amber);font-size:12px;line-height:1.55}
+.icc span{font-size:11.8px;color:#a9b8c8;line-height:1.55}
+.icc.warn{border-left-color:#e2543f}
+.cine-un{position:absolute;z-index:6;left:50%;top:45%;transform:translate(-50%,-50%) scale(.96);opacity:0;
+  transition:.45s ease;pointer-events:none;width:min(540px,92vw);background:rgba(10,16,22,.95);
+  border:1px solid #2b3a4b;border-radius:14px;padding:13px 14px;box-shadow:0 18px 50px rgba(0,0,0,.65)}
+.cine-un.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.un-head{font-size:10.5px;color:#7f92a5;letter-spacing:1.2px;border-bottom:1px solid #1f2b38;padding-bottom:7px;margin-bottom:10px}
+.un-cols{display:grid;grid-template-columns:1fr;gap:8px}
+@media(min-width:620px){.un-cols{grid-template-columns:1fr 1fr}}
+.un-col{padding:8px 10px;border-radius:9px;background:#0d151d;border:1px solid #22303f}
+.un-col h4{margin:0 0 5px;font-size:12px;color:#e08a6d}
+.un-col.vn h4{color:#7cbde0}
+.un-col p{margin:0;font-size:11.6px;line-height:1.62;color:#a9b8c8}
+.un-prior{margin-bottom:10px;padding:7px 9px;border-left:2px solid #7f6a3a;background:#15130d;border-radius:0 8px 8px 0;font-size:11.2px;line-height:1.6;color:#b7ab8c}
+.un-foot{margin-top:10px;font-size:11px;color:#f0b34a;background:#1a1610;border:1px solid #3d301a;border-radius:8px;padding:7px 9px;line-height:1.6}
+
+@media(max-width:600px){.cine-cap{padding:46px 16px 24px}.cine-cap p{font-size:12.4px}.hud-kick{display:none}.cine-cards{top:70px}.cine-paper{width:min(250px,74vw)}}
+
+/* ---------- modal / footer ---------- */
+.mask{position:fixed;inset:0;background:rgba(4,8,12,.82);backdrop-filter:blur(4px);display:none;
+  align-items:flex-end;justify-content:center;z-index:50;padding:0}
+.mask.on{display:flex}
+.sheet{background:#111821;border:1px solid var(--line);border-radius:18px 18px 0 0;padding:18px 18px 26px;
+  max-width:640px;width:100%;max-height:84vh;overflow:auto}
+@media(min-width:700px){.mask{align-items:center;padding:20px}.sheet{border-radius:18px}}
+.sheet h3{margin:0 0 10px;font-size:15px;color:var(--amber)}
+.sheet p,.sheet li{font-size:12.6px;color:#9fb0c2;line-height:1.8}
+.sheet ul{padding-left:18px;margin:6px 0}
+.sheet button{margin-top:14px;width:100%;padding:11px;border-radius:11px;border:1px solid #4a3c22;
+  background:linear-gradient(180deg,#2c2415,#1e2029);color:var(--amber);font-size:13.5px;font-weight:600;cursor:pointer}
+.vinyl{position:fixed;right:16px;bottom:18px;width:46px;height:46px;border-radius:50%;z-index:40;
+  background:radial-gradient(circle at 50% 50%,#1a2530 0 22%,#0d141a 23% 78%,#182430 79% 100%);
+  border:1px solid #2b3a4b;cursor:pointer;display:grid;place-items:center;box-shadow:0 8px 20px rgba(0,0,0,.55);
+  transition:opacity .2s,border-color .2s}
+.vinyl i{width:9px;height:9px;border-radius:50%;background:var(--amber);opacity:.9;display:block}
+.vinyl.on{animation:spin 4s linear infinite}
+.vinyl.off{opacity:.5;border-color:#233340}
+.vinyl.off i{background:#5d7183}
+.vinyl.pulse{animation:spin 4s linear infinite, vp 1.6s ease-in-out infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes vp{0%,100%{box-shadow:0 8px 20px rgba(0,0,0,.55)}50%{box-shadow:0 8px 26px rgba(240,179,74,.35)}}
+footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-size:11px;color:#4d6070;line-height:1.9}
+footer b{color:#64748b;font-weight:600}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hd">
+    <div class="hd-top">
+      <div>
+        <h1>对越自卫反击战 <span>1979</span><em class="ver" id="buildTag">v29</em></h1>
+        <p class="sub">时空沙盒 · 拖动时间轴看战场变化 <em>｜越方称「北部边界保卫战」，国际通称 Sino-Vietnamese War</em></p>
+      </div>
+      <button class="ghost" id="infoBtn" aria-label="说明">i</button>
+    </div>
+    <p class="disc">历史事件梳理与推演演示，不代表任何立场。日期取自公开史料，伤亡等数字存在多种统计口径，页面内已逐条标注来源属性。</p>
+    <nav class="eras" id="eras" role="tablist"></nav>
+  </header>
+
+  <main>
+    <section class="stage" id="stage">
+      <div class="mapcard">
+        <div class="maphead">
+          <span id="mapTitle">中越边境态势</span>
+          <span class="badge" id="dateBadge">1979-02-17</span>
+        </div>
+        <svg id="map" viewBox="76 46 648 574" preserveAspectRatio="xMidYMid meet" aria-label="中越边境示意地图">
+          <defs>
+            <linearGradient id="mg" x1="0" y1="0" x2="0.4" y2="1">
+              <stop offset="0" stop-color="#101a22"/><stop offset="0.55" stop-color="#0d151c"/><stop offset="1" stop-color="#0b1218"/>
+            </linearGradient>
+            <radialGradient id="glowR" cx="50%" cy="50%">
+              <stop offset="0" stop-color="#e2604f" stop-opacity=".55"/><stop offset="1" stop-color="#e2604f" stop-opacity="0"/>
+            </radialGradient>
+            <marker id="arw" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0 0 L12 6 L0 12 z" fill="#e2543f"/>
+            </marker>
+          </defs>
+          <rect width="800" height="620" fill="url(#mg)"/>
+          <g id="geo"></g>
+          <g id="arrows"></g>
+          <g id="places"></g>
+          <g id="marks"></g>
+        </svg>
+        <div class="mapnote" id="mapNote"></div>
+        <div class="mapfoot">
+          <span><i class="lg cn"></i>中方一侧</span>
+          <span><i class="lg vn"></i>越方据点</span>
+          <span><i class="lg hit"></i>交战中</span>
+          <span><i class="lg fall"></i>已被攻克</span>
+          <span><i class="lg line"></i>国界</span>
+          <span style="color:#3d4c5c">示意地图 · 非精确比例 · 点红点跳到失守日</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panelhead">
+          <span class="t" id="stopLabel">D日</span>
+          <span class="d" id="stopDate">1979年2月17日</span>
+        </div>
+        <div class="cards" id="cards"></div>
+      </div>
+    </section>
+
+    <section class="controls" id="controls">
+      <div class="ctlrow">
+        <button id="play">▶ 自动推演</button>
+        <div class="track">
+          <div class="ticks" id="ticks"></div>
+          <input type="range" id="scrub" min="0" max="0" value="0" step="1" aria-label="时间轴">
+        </div>
+        <span class="counter" id="counter">1 / 1</span>
+      </div>
+      <div class="layers">
+        <label class="tg"><input type="checkbox" id="tgDip" checked>外交线</label>
+        <label class="tg"><input type="checkbox" id="tgCost" checked>代价与伤亡</label>
+        <label class="tg"><input type="checkbox" id="tgImp" checked>影响解读</label>
+      </div>
+    </section>
+
+    <section id="listwrap">
+      <h2>本阶段全部节点 · 点击跳转</h2>
+      <div class="list" id="list"></div>
+    </section>
+
+    <section class="recsec" id="recsec" hidden>
+      <div class="dbox" style="margin-bottom:12px">
+        <h3>双方战事全记录 · 我军 / 越军</h3>
+        <p class="note">同一时间点，两边各自在做什么。我军条目取中方公开战史与报道，越军条目取其防御部署、反击与增援行动；双方各自的战果宣称不作转述。</p>
+      </div>
+      <div class="reclist" id="recList"></div>
+    </section>
+
+    <section class="datasec" id="datasec" hidden>
+      <div class="dgrid">
+        <div class="dbox">
+          <h3>关键数据 · 1979年作战</h3>
+          <div class="dline"><span class="k">作战时间</span><span class="v">1979年2月17日 — 3月16日，共28天</span></div>
+          <div class="dline"><span class="k">战线长度</span><span class="v">约 500 公里（广西、云南两个方向）</span></div>
+          <div class="dline"><span class="k">中方兵力</span><span class="v">约 20 余万一线兵力 <small>（另有大量支前民兵与后勤）</small></span></div>
+          <div class="dline"><span class="k">越方兵力</span><span class="v">边境以地方部队、公安屯与民兵为主，约 10 万；后期调正规军增援</span></div>
+          <div class="dline"><span class="k">推进纵深</span><span class="v">深入越境约 20—40 公里（个别方向更远），未进攻河内</span></div>
+          <div class="dline"><span class="k">中方伤亡</span><span class="v">阵亡 6,945 人、负伤约 1.48 万人 <small>（中方公布；部分西方研究估计总伤亡 2—3 万）</small></span></div>
+          <div class="dline"><span class="k">越方伤亡</span><span class="v">中方战报毙伤约 4 万、俘 2,000 余人；越方与西方研究估计军民死亡 2—5 万 <small>（口径差异极大）</small></span></div>
+          <div class="dline"><span class="k">平民</span><span class="v">边境六省城镇与基础设施严重损毁，数十万人流离失所</span></div>
+          <div class="dline"><span class="k">战俘交换</span><span class="v">1979年5月21日起分五批：中方交还 1,636 人，越方交还 238 人</span></div>
+          <div class="dline"><span class="k">后续冲突</span><span class="v">边境武装冲突延续至 1990 年，1991年11月关系正常化</span></div>
+        </div>
+        <div class="dbox">
+          <h3>为什么打 · 四层原因</h3>
+          <div class="imp"><h4>① 地缘与同盟</h4><p>越南 1978年11月与苏联签订带军事同盟性质的条约，同年12月出兵柬埔寨。中国判断南疆面临苏越夹击，需打破战略包围。</p></div>
+          <div class="imp"><h4>② 边境与侨民</h4><p>1978年起边境武装摩擦与侵犯事件激增；越南南方排华导致大批华裔难民外逃，中方公开谴责。</p></div>
+          <div class="imp"><h4>③ 国内政治</h4><p>改革开放起步，需要稳定的南部边疆与军队威信；邓小平复出后需要一个可控的对外行动巩固权威。</p></div>
+          <div class="imp"><h4>④ 国际窗口</h4><p>1979年1月1日中美建交，邓小平随即访美通报行动意图，判断美国不会强烈反对、苏联直接介入风险可控。</p></div>
+        </div>
+      </div>
+
+      <div class="dgrid" style="margin-top:12px">
+        <div class="dbox">
+          <h3>影响 · 中国</h3>
+          <div class="imp"><h4>军事现代化</h4><ul>
+            <li>暴露装备、通信、步炮协同与后勤短板，成为 1980 年代军队改革的直接动因</li>
+            <li>推动 1985 年裁军百万、「军队要忍耐」，从临战状态转向现代化建设</li>
+            <li>此后十年以「两山轮战」轮换部队实战锻炼</li></ul></div>
+          <div class="imp"><h4>政治与外交</h4><ul>
+            <li>南部边疆压力缓解，为改革开放争取到相对稳定的周边环境</li>
+            <li>与美西方关系升温，但引起东南亚国家对华意图的警惕</li>
+            <li>以军事施压迫使越南在柬埔寨问题上走向谈判</li></ul></div>
+        </div>
+        <div class="dbox">
+          <h3>影响 · 越南与地区</h3>
+          <div class="imp"><h4>越南</h4><ul>
+            <li>边境六省城镇、公路、桥梁、厂矿严重损毁，战后重建艰难</li>
+            <li>军费长期高企，1980年代通胀高企、物资短缺，1986年启动「革新开放」</li>
+            <li>深陷柬埔寨战场至 1989 年撤军，高度依赖苏联援助</li>
+            <li>被西方孤立制裁，1990年代转向多元化外交</li></ul></div>
+          <div class="imp"><h4>地区格局</h4><ul>
+            <li>柬埔寨问题延续至 1991 年《巴黎和平协定》，东盟形成一致立场并加速一体化</li>
+            <li>成为冷战时期社会主义阵营内部冲突的典型案例</li>
+            <li>边境冲突与南海争端（1988 赤瓜礁）叠加，影响延续至今</li></ul></div>
+        </div>
+      </div>
+
+      <div class="dbox" style="margin-top:12px">
+        <h3>作战三阶段 · 1979.2.17 — 3.16</h3>
+        <div class="phases">
+          <div class="ph"><div class="ph-h"><b>第一阶段 · 突破</b><span>2.17 — 2.26</span></div>
+            <p>两个方向同时突破边境，向纵深推进。<em>2.20</em> 拿下老街市区；<em>2.22</em> 合围高平、夺占代乃阻击 316A 师增援；<em>2.25</em> 高平与柑塘矿区易手。</p></div>
+          <div class="ph"><div class="ph-h"><b>第二阶段 · 谅山</b><span>2.27 — 3.5</span></div>
+            <p>东线三路总攻谅山，<em>3.4</em> 攻克（距河内约 130 公里，直接威慑首都）；<em>3.5</em> 外交部声明目的已达、开始撤军，重申不要越南一寸土地。</p></div>
+          <div class="ph"><div class="ph-h"><b>第三阶段 · 回撤</b><span>3.6 — 3.16</span></div>
+            <p>交替掩护、清剿残敌、有序回撤。<em>3.12</em> 东线谅山方向撤完，<em>3.13</em> 西线全部回国，<em>3.16</em> 最后一批东线部队入境，作战结束。</p></div>
+        </div>
+      </div>
+
+      <div class="dgrid" style="margin-top:12px">
+        <div class="dbox">
+          <h3>双方怎么打</h3>
+          <div class="imp"><h4>中方：牛刀杀鸡、穿插合围</h4><ul>
+            <li>两个方向二十余万兵力同时突破，以兵力优势分段包围</li>
+            <li>坦克与步兵沿公路穿插，直插高平、谅山侧后</li>
+            <li>有限目的、有限时间、有限纵深，达到目的即宣布撤军</li>
+            <li>北线各大军区一级战备，全程防备苏联介入</li></ul></div>
+          <div class="imp"><h4>越方：依托工事、拖时间</h4><ul>
+            <li>山头、坑道、暗堡、地雷阵、竹签阵构成坚固前沿</li>
+            <li>就地阻击＋游击袭扰，计划拖到苏联施压</li>
+            <li>主力压在柬埔寨，二线不敢大规模北上回援</li>
+            <li>谅山失守后紧急布防河内、疏散市民，仍未抽回主力决战</li></ul></div>
+        </div>
+        <div class="dbox">
+          <h3>越军视角：从误判到被动</h3>
+          <div class="imp"><h4>兵力结构</h4><p>北部守军以边防公安屯、地方独立团、省独立营、部分正规师和大量民兵组成，少数主力师作二线预备。东线重点守同登、高平、谅山（谅山布防最强），西线重点守老街与柑塘工矿区。</p></div>
+          <div class="imp"><h4>三个被动</h4><ul>
+            <li>增援迟缓：代乃阻击战把 316A 师拦在增援路上</li>
+            <li>不敢决战：怕柬埔寨战场崩盘，也忌惮中方实力</li>
+            <li>撤军后尾随：只敢小范围袭扰，随后抢占骑线高地</li></ul></div>
+          <div class="imp"><h4>八十年代：骑线、炮击、特工</h4><p>抢占法卡山、扣林山、老山、者阴山等制高点，观察并炮击我境内村寨道路；1984 年 7·12 松毛岭大规模反扑；特工夜间偷袭、摸哨、捕俘长期活跃；双线消耗拖垮国内经济。</p></div>
+        </div>
+      </div>
+
+      <div class="dbox" style="margin-top:12px">
+        <h3>从援助到反目 · 1950—1979</h3>
+        <div class="dline"><span class="k">1950—1954</span><span class="v">援越抗法：武器弹药、军事顾问、后勤物资</span></div>
+        <div class="dline"><span class="k">1965—1973</span><span class="v">援越抗美：派出工程兵、高炮与后勤部队 32 万余人入越，千余名官兵牺牲；枪炮、粮食、石油、成套设备持续供应</span></div>
+        <div class="dline"><span class="k">工程</span><span class="v">公路、铁路、港口、工厂等基础设施多由中国援建，越北的交通与工业体系长期依赖这条线</span></div>
+        <div class="dline"><span class="k">累计规模</span><span class="v">约 200 亿美元 <small>（各方统计口径不一，此为常见说法）</small></span></div>
+        <div class="dline"><span class="k">1979 战场</span><span class="v">解放军缴获与遭遇的越军装备中，大量为中国制造；越军依托的公路、桥梁、矿区也多是中国援建</span></div>
+        <div class="dline"><span class="k">撤军阶段</span><span class="v">回收此前援越物资，爆破援建设施——「给过的东西，搬走或炸掉」</span></div>
+      </div>
+
+      <div class="dgrid" style="margin-top:12px">
+        <div class="dbox">
+          <h3>越军档案 · 决策与主张</h3>
+          <div class="imp"><h4>最高战略：印支联邦</h4><p>核心目标是建立「印支联邦」，主力长期驻柬埔寨、控制老挝；对北方判断失误，认为中国最多是小规模边境威慑。</p></div>
+          <div class="imp"><h4>北部方针：寸土不让、以拖待变</h4><p>依托既设工事就地阻击，游击袭扰拖时间，等苏联在外交与军事上施压；不抽柬埔寨主力回援，避免两线同时崩盘。</p></div>
+          <div class="imp"><h4>对外主张</h4><ul>
+            <li>在安理会称中国「侵略」，要求立即停火、无条件撤军</li>
+            <li>拒绝在军事压力下谈判边境问题</li>
+            <li>坚持柬埔寨驻军与「印支联邦」框架不变</li>
+            <li>国内宣传「北部边界保卫战」的胜利叙事</li></ul></div>
+        </div>
+        <div class="dbox">
+          <h3>越军档案 · 战线与防线</h3>
+          <div class="imp"><h4>三条战线</h4><ul>
+            <li><b>东线</b>：同登—高平—谅山，谅山是北部最重要门户，布防最强</li>
+            <li><b>西线</b>：老街—柑塘工矿区，依托红河与山地</li>
+            <li><b>海上</b>：1979 年后加强占据南沙，1988 年赤瓜礁交火</li></ul></div>
+          <div class="imp"><h4>层叠式防线</h4><ul>
+            <li>一线：公安屯与连排支撑点，坑道暗堡＋地雷阵＋竹签阵</li>
+            <li>二线：地方独立团、省独立营，正规师作机动预备队</li>
+            <li>骑线：1979 年撤军后抢占老山、者阴山、法卡山、扣林山等制高点</li></ul></div>
+          <div class="imp"><h4>增援路线</h4><ul>
+            <li>河内—谅山：1 号公路，谅山方向增援主通道</li>
+            <li>河内—高平：3 号公路，山地路段易被切断</li>
+            <li>沙巴—柑塘：316A 师沿公路北上，被阻于代乃</li>
+            <li>80 年代：河内—河江—老山，轮换补兵、弹药前送</li></ul></div>
+        </div>
+      </div>
+
+      <div class="dbox" style="margin-top:12px">
+        <h3>各场兵力汇总 <span style="font-weight:400;font-size:11px;color:#64748b">公开资料常见说法，各版本差异较大</span></h3>
+        <div class="dline"><span class="k">1979 全线</span><span class="v">我军 20 余万一线（另有支前民兵数十万）｜越军 北部约 10 万，以地方部队与民兵为主</span></div>
+        <div class="dline"><span class="k">高平方向</span><span class="v">我军 3 个军（含坦克团）｜越军 346 师 + 地方独立团</span></div>
+        <div class="dline"><span class="k">谅山方向</span><span class="v">我军 55 军等部｜越军 第 3 师（金星师）+ 地方部队</span></div>
+        <div class="dline"><span class="k">老街 · 柑塘</span><span class="v">我军 13 军、14 军｜越军 345 师一部 + 316A 师</span></div>
+        <div class="dline"><span class="k">代乃阻击</span><span class="v">我军 阻击部队约 1 个团｜越军 316A 师主力北上增援，被拦下</span></div>
+        <div class="dline"><span class="k">1981 法卡山</span><span class="v">我军 广西边防部队｜越军 以连、营规模多次反扑</span></div>
+        <div class="dline"><span class="k">1984 两山</span><span class="v">我军 14 军 40 师、11 军 31 师｜越军 当面 2 个师另加特工与炮兵</span></div>
+        <div class="dline"><span class="k">1984.7.12</span><span class="v">我军 老山防御部队＋集中炮兵｜越军团师规模反扑（越方称「MB84」），伤亡惨重</span></div>
+        <div class="dline"><span class="k">1984—1989</span><span class="v">我军 六大军区轮战部队｜越军 河江方向轮换补兵，长期对峙</span></div>
+      </div>
+
+      <div class="dbox" style="margin-top:12px">
+        <h3>三句话总结</h3>
+        <p class="note">
+          ① 1979.2.17—3.16：出境、有限惩戒、打完即撤，不占领越南国土。<br>
+          ② 1981—1989：战斗基本在我方边境与骑线点附近，以收复、防御、轮训部队为主。<br>
+          ③ 性质：自卫还击，捍卫领土主权、打击地区霸权，不是灭国战争；今天中越是正常邦交国家。
+        </p>
+      </div>
+
+      <div class="dbox" style="margin-top:12px">
+        <h3>口径与争议 · 读数据前请先看</h3>
+        <p class="note">
+          ① 名称：中方称「对越自卫反击战／对越自卫还击作战」，越方称「北部边界保卫战」（Chiến tranh biên giới Việt–Trung 1979），国际学界通称 Sino-Vietnamese War。<br>
+          ② 伤亡：双方公布数字均含战时宣传成分，且对战伤致死者、失踪者、支前民兵与平民的统计口径不同，学界估计区间明显大于官方数字。<br>
+          ③ 性质：中方定位为「有限目的、有限时间、有限纵深」的自卫反击并主动撤军；越方与国际多数研究视其为大规模跨境进攻，柬埔寨问题是核心背景。<br>
+          ④ 规模：兵力与推进纵深数据各版本差异较大，本页取常见区间而非单一定值。
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <button class="vinyl on" id="vinyl" aria-label="页面背景音乐开关" title="背景音乐"><i></i></button>
+  <audio id="pagebgm" src="page-bgm.mp3" loop preload="auto"></audio>
+
+  <footer>
+    <b>资料属性</b>：中国军方公开战史与《人民日报》历史报道、越南官方纪念资料与国防部公布数据、红十字国际委员会战俘交换记录、冷战史与中越关系研究（Chen Jian、Brantly Womack、King C. Chen 等）。<br>
+    <b>提示</b>：「🎬 电影推演」用 98 秒地图动画讲完 1979 年这一仗；键盘 ← → 单步，空格键播放/暂停。
+  </footer>
+</div>
+
+
+<div class="cine" id="cine">
+  <div class="cine-stage" id="cineStage">
+    <svg id="cmap" viewBox="76 46 648 574" preserveAspectRatio="xMidYMid meet" aria-label="战役推演地图">
+      <defs>
+        <linearGradient id="cmg" x1="0" y1="0" x2="0.4" y2="1">
+          <stop offset="0" stop-color="#0e1720"/><stop offset="0.55" stop-color="#0a1219"/><stop offset="1" stop-color="#080f15"/>
+        </linearGradient>
+        <radialGradient id="cglow" cx="50%" cy="50%">
+          <stop offset="0" stop-color="#e2543f" stop-opacity=".5"/><stop offset="1" stop-color="#e2543f" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="bglow" cx="50%" cy="50%">
+          <stop offset="0" stop-color="#5fa8d3" stop-opacity=".45"/><stop offset="1" stop-color="#5fa8d3" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="800" height="620" fill="url(#cmg)"/>
+      <g id="c-geo"></g><g id="c-rings"></g><g id="c-arrows"></g><g id="c-places"></g><g id="c-fx"></g>
+    </svg>
+    <div class="cine-vig"></div>
+
+    <div class="cine-shade" id="cShade"></div>
+    <div class="cine-flash" id="cFlash"></div>
+    <div class="cine-un" id="cQuote" style="top:43%">
+      <div class="un-head">1979 年 2 月 · 两套说法</div>
+      <div class="un-cols">
+        <div class="un-col"><h4>中方</h4><p>「是可忍，孰不可忍」——2.17《人民日报》通栏<br>「我们不要越南的一寸土地，也绝不容许别人侵犯我国领土」——3.5 外交部声明</p></div>
+        <div class="un-col vn"><h4>越方</h4><p>谴责中国「武装侵略」，要求「立即停止、全部撤出」<br>边境事件系「误炸」，否认蓄意侵犯</p></div>
+      </div>
+      <div class="un-foot">同一个局面，两套词：一方叫「自卫还击」，一方叫「侵略」——这套话语一直用到 1991 年。</div>
+    </div>
+    <div class="cine-paper" id="cPaper2" style="top:50%">
+      <div class="pp-mast">人民日报</div>
+      <div class="pp-rule"></div>
+      <div class="pp-date">1979 年 2 月　第 1 版</div>
+      <div class="pp-head">我代表就越南武装侵犯<br>我国领土向安理会提出控告</div>
+      <div class="pp-sub">—— 外交部同时向越方提出强烈抗议</div>
+      <div class="pp-cols"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="pp-tag">版面复刻示意 · 标题按当时行文重排，非原件影印</div>
+    </div>
+    <div class="cine-paper" id="cPaper">
+      <div class="pp-mast">人民日报</div>
+      <div class="pp-rule"></div>
+      <div class="pp-date">1979年2月17日　星期六　第 1 版</div>
+      <div class="pp-head">是可忍，孰不可忍</div>
+      <div class="pp-sub">——来自中越边境的报告</div>
+      <div class="pp-cols"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="pp-tag">版面复刻示意 · 标题依原报重排，非原件影印</div>
+    </div>
+    <div class="cine-cards" id="cBg">
+      <div class="icc warn"><b>倒向苏联</b><span>黎笋集团投靠苏联，推行地区霸权，中越关系持续恶化</span></div>
+      <div class="icc warn"><b>重心南移</b><span>核心目标是「印支联邦」，主力长期压在柬埔寨与老挝方向</span></div>
+      <div class="icc"><b>边境与侨民</b><span>驱赶迫害华侨，边境开枪袭扰、侵占土地、杀伤边民</span></div>
+      <div class="icc"><b>南海</b><span>侵占南沙部分岛礁，与陆上摩擦叠加</span></div>
+      <div class="icc warn"><b>边境流血</b><span>庭毫山事件、廖行哨所被枪击炮击；越境埋雷、插竹签，边民与民兵伤亡</span></div>
+    </div>
+    <div class="cine-un" id="cEnemy">
+      <div class="un-head">越军部署 · 1979 年初</div>
+      <div class="un-cols">
+        <div class="un-col vn"><h4>兵力构成</h4><p>边防公安屯、地方独立团、省独立营、部分正规师，加上大量边境民兵；少数主力师作二线预备队。</p></div>
+        <div class="un-col vn"><h4>防御体系</h4><p>山头＋坑道＋暗堡＋地雷阵＋竹签阵；就地阻击、游击袭扰，拖时间等苏联施压。</p></div>
+      </div>
+      <div class="un-foot">东线重点守同登、高平、谅山（谅山布防最强）；西线重点守老街与柑塘工矿区。</div>
+    </div>
+    <div class="cine-cards" id="cAid">
+      <div class="icc"><b>1950—1975</b><span>枪炮、弹药、粮食、石油、成套设备，二十五年不断</span></div>
+      <div class="icc"><b>工程</b><span>公路、铁路、港口、工厂——越北交通与工业多由中国援建</span></div>
+      <div class="icc"><b>32 万人</b><span>1965—1973 年工程兵与高炮部队入越，千余名官兵牺牲</span></div>
+      <div class="icc warn"><b>1979</b><span>越军手里拿的、脚下走的，很多都是这些</span></div>
+    </div>
+    <div class="cine-cards" id="cCards">
+      <div class="icc warn"><b>苏联</b><span>中苏边境陈兵约 45 个师，进入战备；空运援越，太平洋舰队舰只进入南海</span></div>
+      <div class="icc"><b>美国</b><span>航母战斗群进入南海警戒；公开要求双方克制、同时撤军</span></div>
+      <div class="icc"><b>东盟</b><span>一致要求越南从柬埔寨撤军，在联合国推动决议草案</span></div>
+      <div class="icc"><b>越军主力</b><span>约 20 万在柬埔寨战场，北部只有约 10 万地方部队与民兵</span></div>
+    </div>
+    <div class="cine-un" id="cUn">
+      <div class="un-head">联合国安理会 · 紧急会议　1979.02.18 — 02.23</div>
+      <div class="un-prior">开战前，中方已就边境武装侵犯向安理会提出交涉；越方辩称相关事件系「误炸」，否认蓄意侵犯。</div>
+      <div class="un-cols">
+        <div class="un-col"><h4>中国代表 陈楚</h4><p>「我们不要越南的一寸土地」——行动是被迫的自卫反击，任务完成即主动撤军；拒绝接受「侵略」定性。</p></div>
+        <div class="un-col vn"><h4>越南代表</h4><p>谴责「武装侵略」，要求安理会立即制止、中国军队无条件撤出；此前称边境事件系「误炸」。</p></div>
+      </div>
+      <div class="un-foot">2月22日，一项要求停止敌对行动、撤出外国军队的决议草案被苏联否决，安理会未能采取行动。</div>
+    </div>
+
+    <div class="cine-hud">
+      <span class="hud-date" id="cDate">1979.02.17</span>
+      <span class="hud-kick" id="cKick">南疆 · 两个方向</span>
+      <button class="cbtn" id="cMute" aria-label="声音">🔊</button>
+      <button class="cbtn" id="cClose" aria-label="关闭">✕</button>
+    </div>
+    <div class="cine-title" id="cTitle"><span>1 9 7 9</span><b>中越边境</b><i>一场 28 天战争的地图推演</i></div>
+    <div class="cine-stats" id="cStats">
+      <div class="cstat"><b>28</b><span>天的主要作战</span></div>
+      <div class="cstat"><b>500</b><span>公里边境线</span></div>
+      <div class="cstat"><b>6945</b><span>中方阵亡（公布）</span></div>
+      <div class="cstat"><b>11</b><span>年边境冲突</span></div>
+    </div>
+    <div class="cine-cap" id="cCap">
+      <span class="kick" id="cCapKick">南疆 · 两个方向</span>
+      <h2 id="cCapTitle">五百公里边境线，同时开火</h2>
+      <p id="cCapSub">2月17日05:00，中国边防部队从广西、云南发起进攻。</p>
+    </div>
+    <div class="cine-pause" id="cPause"><span>▶</span></div>
+    <div class="cine-credit" id="cCredit">BGM · 南疆行（激昂版）</div>
+    <div class="cine-bar" id="cBar"><i id="cBarIn"></i></div>
+    <audio id="bgm" src="bgm.mp3" loop preload="auto"></audio>
+  </div>
+</div>
+<div class="mask" id="mask">
+  <div class="sheet">
+    <h3>关于这个沙盒</h3>
+    <p>这是一个历史事件的可交互梳理：把 1975—2009 年的中越关系拆成「战前背景 / 1979 战争 / 边境十年 / 和解」四段，每一段都能按时间点推进，地图会随之变化。</p>
+    <ul>
+      <li><b>时间轴</b>：拖动或点「自动推演」，逐个节点查看当天发生的事</li>
+      <li><b>地图</b>：蓝色为中国一侧，红色为越方城镇；变橙=交战中，变色=已失守</li>
+      <li><b>图层</b>：可单独看军事、外交、代价三条线，避免信息过载</li>
+      <li><b>电影推演</b>：在「1979 战争」页点按钮，进入 98 秒地图动画：双线同时推进、报纸版面、国际动向、安理会交锋、城镇逐个易手</li>
+      <li><b>数据页</b>：第五个标签「影响与数据」给出口径说明与双方代价对比</li>
+    </ul>
+    <p>所有日期取自公开史料；涉及伤亡、兵力、推进纵深等数字，页面已标注是「官方公布」「战报」还是「学界估计」，请勿把宣传数字当作定论。</p>
+    <button id="closeBtn">开始推演</button>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============ 1. 事件库 ============ */
+var EV = {
+/* ---- 背景 ---- */
+b0:{date:"1950—1975",kind:"bg",tag:"背景",title:"二十五年，中国援越",
+  desc:"越南抗法与抗美期间，中国是主要援助国之一：枪支弹药、粮食石油、成套设备，以及公路、铁路、港口、工厂等工程；1965—1973 年还派出工程兵、高炮与后勤部队 32 万余人入越，千余名官兵牺牲在越南。",
+  impact:"越军的装备体系、后勤与北部基础设施大量由中国援建。到 1979 年，解放军在战场上遇到的是拿着中国造枪炮、依托中国援建公路机动的对手——这也是后来「回收援越物资」的由来。"},
+b1:{date:"1975-04-30",kind:"bg",tag:"背景",title:"越南战争结束，南北统一",
+  desc:"西贡陷落，越南战争结束。1976年7月越南社会主义共和国成立，河内成为统一国家的首都。",
+  impact:"统一后的越南拥有百战之师与大量美制、苏制装备，自视为地区军事强国；中越在柬埔寨、华侨、边界问题上的分歧开始公开化。"},
+b2:{date:"1978-06-29",kind:"bg",tag:"背景",title:"越南加入经互会，全面倒向苏联",
+  desc:"越南加入苏联主导的经济互助委员会，经济与军事援助转向苏联阵营；同年中国停止对越经济技术援助并撤回专家。",
+  impact:"苏越经济—军事捆绑加深，越南在中南半岛的行动获得苏联背书，中越关系失去缓冲。"},
+b3:{date:"1978",kind:"bg",tag:"背景",title:"排华与印支难民潮",
+  desc:"越南南方推行社会主义改造，大批华裔越南人被驱逐或被迫逃亡；1978—1979年印支难民潮中数十万人从海路离境。",
+  impact:"华侨问题成为中方公开谴责越方的重要议题，边境地区民族与民情对立加剧。"},
+b4:{date:"1978-11-03",kind:"bg",tag:"背景",title:"《苏越友好合作条约》签订",
+  desc:"双方签订带有军事同盟性质的条约，有效期25年，规定一方受到威胁时双方协商应对。",
+  impact:"中国判断南疆面临苏越南北夹击的战略压力，「打越」必须同时计算苏联反应与北方边境风险。"},
+b5:{date:"1978-12-25",kind:"bg",tag:"背景",title:"越南出兵柬埔寨",
+  desc:"约20万越军入侵民主柬埔寨，1979年1月7日攻占金边，推翻红色高棉政权。",
+  impact:"中国视其为地区扩张与对华战略包围的一环；柬埔寨问题成为此后十余年中越对抗与外交博弈的核心。"},
+b6:{date:"1979-01-28",kind:"dip",tag:"外交",title:"中美建交，邓小平访美",
+  desc:"1月1日中美正式建交。1月28日至2月5日邓小平访美，向美方通报将对越南采取军事行动，表示要「教训」越南。",
+  impact:"中方判断美国不会强烈反对、苏联直接介入风险可控，动武的外交前提基本就位。"},
+b11:{date:"1978-11-01",kind:"bg",tag:"边境",title:"庭毫山流血事件",
+  desc:"越方武装人员侵入广西靖西庭毫山地区，向中国社员和民兵开枪，打伤并抓走多人。这是战前边境流血事件中最著名的一起，也是中方公开控诉越方「武装入侵」的典型案例。",
+  impact:"边境摩擦由「摩擦」升级为「流血」：边民与民兵出现伤亡，成为国内动员、外交抗议与后来作战决心的直接依据。"},
+b12:{date:"1978-12-15",kind:"bg",tag:"边境",title:"开枪开炮、越境埋雷设障",
+  desc:"越军频繁向中国境内哨所、巡逻人员与边民射击。1978年12月，越军向广西宁明县廖行哨所开枪并炮击，炮弹落在距哨所仅 1 米处。越方人员还越境埋设地雷、插竹签、架铁丝网，造成边民与民兵伤亡。",
+  impact:"边境一线进入准战争状态：中方边民后撤、民兵上哨，边防部队加强巡逻排雷，为后续大部队集结与突破做准备。"},
+b8:{date:"1978-12-07",kind:"mil",tag:"决策",title:"中央军委定下自卫还击决心",
+  desc:"12月7—8日，中央军委开会正式定下对越自卫还击作战决心，任命许世友为东线（广西方向）总指挥、杨得志为西线（云南方向）总指挥；北方各大军区同时进入一级战备，防备苏联可能的军事干预。",
+  impact:"战争由边境摩擦升级为国家层面的有限军事行动；北线战备与南线出击同步展开，是整场战争的战略前提。"},
+b9:{date:"1979-02-10",kind:"bg",tag:"敌情",title:"越军的误判：不会大打",
+  desc:"越军高层低估中方决心，判断最多只是小规模边境威慑，因此主力长期压在柬埔寨战场，北部以边防公安屯、地方独立团、省独立营和大量民兵守备，少数正规师作二线预备队。防御依托山头、坑道、暗堡、地雷阵与竹签阵，计划就地阻击、游击袭扰、拖时间，等苏联施压。",
+  impact:"误判直接决定战场态势：一线守备薄弱、二线增援迟缓，被中方大兵力穿插合围逐个吃掉。"},
+b10:{date:"1979-02-12",kind:"dip",tag:"外交",title:"会前外交战：中方先告到安理会",
+  desc:"开战前，中方就越南在边境的武装侵犯向联合国安理会提出交涉，要求国际社会关注边境局势；越方在安理会辩称相关事件属于「误炸」，否认蓄意侵犯中国领土。",
+  impact:"中方先走完国际程序，为随后「被迫自卫反击」的定性留下依据；越方的「误炸」说法未被中方接受。"},
+b13:{date:"1979-02-17",kind:"dip",tag:"言论",title:"双方怎么说",
+  desc:"中方：2月17日《人民日报》通栏《是可忍，孰不可忍——来自中越边境的报告》；政府声明称边防部队「在忍无可忍的情况下被迫奋起自卫还击」；3月5日外交部声明「我们不要越南的一寸土地，也绝不容许别人侵犯我国领土」。越方：谴责中国「武装侵略」，要求「立即停止、全部撤出」，并在安理会称边境事件系「误炸」；3月5日发布全国总动员令。",
+  impact:"两边对同一场战争用了两套完全不同的词：一方叫「自卫还击」，一方叫「侵略」；这套话语一直用到 1991 年关系正常化。"},
+b7:{date:"1979-02-16",kind:"dip",tag:"外交",title:"开战前夜：边境事件与舆论动员",
+  desc:"中方统计，1978年以来越方在边境的武装挑衅与侵犯事件持续增加，边民与边防人员伤亡。2月17日《人民日报》发表《是可忍，孰不可忍》。",
+  impact:"外交与舆论动员完成，军事行动进入倒计时；边境中方一侧已完成疏散与支前准备。"},
+
+/* ---- 1979 战争 ---- */
+w1:{date:"1979-02-17",time:"05:00",kind:"mil",tag:"军事",title:"D日：全线出击",
+  desc:"中国以广西、云南两个方向约20余万兵力，在约500公里边境线上同时发起攻击。东线广州军区（许世友指挥）主攻高平、谅山；西线昆明军区（杨得志指挥）主攻老街、柑塘，并向沙巴方向穿插。",
+  impact:"越军边境一线以地方部队、公安屯与民兵为主，阵地很快被突破；河内紧急从柬埔寨战场与南方抽调正规军北上。"},
+w2:{date:"1979-02-17",kind:"dip",tag:"外交",title:"中国政府声明：有限的自卫反击",
+  desc:"中方声明行动属被迫自卫反击，不要求越南领土，目标是打击边境侵犯、保卫边疆安全。",
+  impact:"中方把战争限定为「有限目的、有限时间、有限纵深」，为单方面撤军留出政治空间；越方与国际社会则多视之为大规模跨境进攻。"},
+w3:{date:"1979-02-18",kind:"dip",tag:"外交",title:"联合国安理会紧急会议",
+  desc:"应东盟国家要求，安理会召开紧急会议讨论中越冲突。苏联与东欧国家支持越南，美国等西方国家立场谨慎，仅呼吁双方克制与撤军。",
+  impact:"安理会未能通过有约束力的决议；东盟国家此后在柬埔寨问题上形成一致立场，要求越南从柬撤军。"},
+w4:{date:"1979-02-20",kind:"mil",tag:"军事",title:"西线强渡红河，拿下老街市区",
+  desc:"西线部队强渡红河突破防线，2月20日基本歼灭老街守敌、拿下市区，随后向柑塘、沙巴方向推进。越军316A师等部在沙巴方向抵抗。",
+  impact:"越军西北防线被撕开，西线战场向越南纵深推进数十公里，越北交通线受到直接威胁。"},
+w5b:{date:"1979-02-22",kind:"mil",tag:"军事",title:"合围高平 · 代乃阻击战",
+  desc:"东线完成对高平地区越军的合围；西线部队夺占代乃，阻击越军316A师北上增援柑塘。越军二线主力不敢大规模回援，只能少量抽调。",
+  impact:"增援被拦在半路，高平、柑塘守军各自为战；这是本次战争中最典型的一次「围点打援」。"},
+w5:{date:"1979-02-23",kind:"mil",tag:"军事",title:"东线攻占同登",
+  desc:"东线部队攻克谅山门户同登，越军「金星师」（第3师）所属部队与公安屯遭受重创，残余退守谅山。",
+  impact:"谅山正面门户洞开，越军被迫在谅山以北山地重新组织防御，为战役决胜埋下伏笔。"},
+w6:{date:"1979-02-25",kind:"mil",tag:"军事",title:"攻占高平 · 占领柑塘矿区",
+  desc:"东线北集团攻占高平市，越军346师等部退入周边山区；同日西线占领柑塘市与柑塘矿区。第一阶段作战目标基本达成。",
+  impact:"高平省城与越北重要工矿区易手，越军北线指挥体系被打乱，战斗转入长期清剿与反清剿。"},
+w7:{date:"1979-02-27",kind:"mil",tag:"军事",title:"第二阶段：谅山总攻",
+  desc:"东线部队三路对谅山发起总攻。越军以第3师、地方部队与公安屯依托喀斯特山地与坑道工事节节抵抗，双方在扣马山、巴外山等要点反复争夺。",
+  impact:"谅山是河内以北最后一道门户，其得失直接决定这场战争的政治结局，双方在此投入最强火力。"},
+w8:{date:"1979-03-04",kind:"mil",tag:"军事",title:"谅山陷落",
+  desc:"3月2日中方占领谅山市区奇穷河以北，3月4日渡过奇穷河占领全城。谅山以南即为红河三角洲平原，河内直线距离约130公里。",
+  impact:"河内震动，外国使团开始做撤离准备；中方在军事上取得最大战果，为「达到目的即撤」创造了条件。"},
+w9:{date:"1979-03-05",kind:"dip",tag:"外交",title:"外交部声明：目的已达，开始撤军",
+  desc:"中国外交部发表声明：自卫还击预期目的已经达成，边防部队自3月5日起开始撤军；重申中国不要越南一寸土地，也绝不容许他国侵犯中国领土主权。同日越南发布全国总动员令。",
+  impact:"中方以「有限目的、打完即撤」收束战争，避免陷入长期消耗与苏联介入的口实；越方动员令则把边境推入长期战备。"},
+w10:{date:"1979-03-12",kind:"mil",tag:"军事",title:"第三阶段：交替掩护，边清剿边回撤",
+  desc:"3月6日起各部队交替掩护、清剿残敌、有序回撤。3月12日东线谅山方向率先撤完，3月13日西线部队全部撤回境内。撤退同时对越北公路、桥梁、厂矿实施爆破，并回收此前援越物资。",
+  impact:"越南北部边境城镇几乎被夷为平地；中方称针对军事设施与援建项目，越方称大量民用设施被毁，边境经济长期停滞。"},
+w11:{date:"1979-03-16",kind:"mil",tag:"军事",title:"撤军完成，主要作战阶段结束",
+  desc:"中国宣布边防部队全部撤回境内，历时28天的作战结束。双方在边境保持重兵对峙。",
+  impact:"战争并未真正结束：越军随后占领边境骑线制高点，双方炮击与小规模战斗持续十年。"},
+w12:{date:"1979-05-21",kind:"dip",tag:"外交",title:"战俘交换",
+  desc:"在红十字国际委员会见证下，双方在边境分五批交换战俘：中方交还越俘1,636人，越方交还中方被俘人员238人。",
+  impact:"战俘问题基本了结，但双方对失踪人员、伤亡数字的争议延续至今，成为两国历史叙事的敏感点。"},
+
+/* ---- 边境十年 ---- */
+d9:{date:"1984-04-02",kind:"mil",tag:"军事",title:"先期炮火打击：为两山做准备",
+  desc:"4月2日至27日，云南方向集中炮火对老山、者阴山区域越军阵地进行持续打击，摧毁工事、压制火力，为拔点作战创造条件。",
+  impact:"二十多天的炮火准备把越军表面阵地打成废墟，4月28日的步兵攻击得以在短时间内拿下主峰。"},
+d8:{date:"1986-07-10",kind:"bg",tag:"转折",title:"黎笋去世，越南转向",
+  desc:"越共总书记黎笋去世，越南内政外交开始调整；长期双线消耗（柬埔寨＋北部边境）使经济难以为继，1986年底越共六大提出「革新开放」。",
+  impact:"河内逐步从柬埔寨抽身、寻求与中国接触，边境冲突降温，为90年代关系正常化铺路。"},
+d1:{date:"1979—1980",kind:"mil",tag:"军事",title:"骑线制高点对峙",
+  desc:"越军占领老山、者阴山、法卡山、扣林山等中越边境骑线制高点，构筑坑道工事并向中国境内炮击，边民伤亡、村寨后撤。",
+  impact:"边境形成「武装对峙＋炮击＋拔点」的长期消耗格局，这些山头成为此后十年冲突的主战场。"},
+d2:{date:"1981-05-05",kind:"mil",tag:"军事",title:"收复法卡山、扣林山",
+  desc:"广西边防部队收复法卡山，云南边防部队收复扣林山。此后越军多次以连、营规模反扑，阵地反复易手。",
+  impact:"中方以「拔点作战」清除越军边境据点，战斗规模有限但单位伤亡密度极高。"},
+d3:{date:"1984-04-28",kind:"mil",tag:"军事",title:"收复老山、者阴山",
+  desc:"昆明军区第14军收复老山，第11军收复者阴山，随后转入防御。越军调集重兵准备反扑。",
+  impact:"「两山」成为中越边境最著名的战场，此后五年中国各军区部队轮换参战，边境成为实战练兵场。"},
+d4:{date:"1984-07-12",kind:"mil",tag:"军事",title:"越军大规模反扑被击退",
+  desc:"越军以加强师规模对老山、松毛岭方向发起反扑（越方称「MB84」战役），在炮火覆盖下伤亡惨重，进攻被击退。",
+  impact:"越军丧失在老山方向夺回制高点的能力，战场主动权转手中方；此战成为两山轮战中最惨烈的一役。"},
+d5:{date:"1984—1989",kind:"mil",tag:"军事",title:"两山轮战：各大军区轮换上阵",
+  desc:"南京军区→济南军区→兰州军区→北京军区→成都军区依次赴滇轮战，以阵地防御、炮击、拔点、侦察捕俘与小规模出击为主；越军特工夜间偷袭、摸哨、破袭同样活跃。",
+  impact:"中国军队以实战检验部队、装备与指挥体系，暴露的问题推动80年代军队改革；越南则被双线消耗拖垮国力。"},
+d6:{date:"1988-03-14",kind:"mil",tag:"军事",title:"赤瓜礁海战",
+  desc:"中国海军在南沙赤瓜礁与越南海军交火，击沉越方运输船，随后控制永暑、华阳、东门、南薰、渚碧、赤瓜等礁盘。",
+  impact:"冲突从陆地延伸到南海，成为今日南沙争端的重要历史节点，也使中越矛盾叠加海洋权益问题。"},
+d7:{date:"1990-02",kind:"mil",tag:"军事",title:"最后一次交火与边境停火",
+  desc:"老山方向发生最后一次较大规模交火后，双方边境基本停火（具体日期各方记载不一）。",
+  impact:"持续11年的边境武装冲突走向结束，双方转入秘密外交，为关系正常化铺路。"},
+
+/* ---- 和解 ---- */
+p1:{date:"1990-09-03",kind:"dip",tag:"外交",title:"成都秘密会晤",
+  desc:"中越两国领导人在成都举行秘密会晤，就柬埔寨问题与关系正常化达成默契。",
+  impact:"绕开公开对抗渠道，为1991年正式关系正常化铺平道路。"},
+p2:{date:"1991-11-05",kind:"dip",tag:"外交",title:"中越关系正常化",
+  desc:"越共中央总书记杜梅、部长会议主席武文杰访华，双方发表联合公报，宣布中越关系正常化。",
+  impact:"两国从敌对转为「长期稳定、面向未来」的关系，边境贸易迅速升温，边民互市恢复。"},
+p3:{date:"1999-12-30",kind:"dip",tag:"外交",title:"签署《中越陆地边界条约》",
+  desc:"双方签署陆地边界条约，以条约方式解决历史遗留的边界争议（争议地区约227平方公里）。",
+  impact:"1979年战争最直接的遗产——陆地边界——从战场变为合作前沿，边境口岸与跨境经济合作区随之兴起。"},
+p4:{date:"2000-12-25",kind:"dip",tag:"外交",title:"签署北部湾划界协定",
+  desc:"双方签署北部湾领海、专属经济区和大陆架划界协定，2004年正式生效。",
+  impact:"海上边界首次以谈判方式划定，为渔业安排与油气合作提供框架，成为周边海洋划界的参考案例。"},
+p5:{date:"2008-12-31",kind:"dip",tag:"外交",title:"陆地边界勘界立碑完成",
+  desc:"中越陆地边界全线勘界立碑工作完成，边界线以法律形式最终确定。",
+  impact:"边界争端以条约收束，但历史记忆、南海问题与民族主义情绪仍长期影响两国关系。"}
+};
+
+/* ============ 2. 阶段与节点 ============ */
+var ERAS = [
+ {key:"pre",name:"战前背景",sub:"1975—1979.2",mapTitle:"战前：边境态势与阵营重组",stops:[
+   {d:"1950-01-01",show:"1950—1975",t:"援越二十五年",ids:["b0"]},
+   {d:"1975-04-30",t:"越南统一",ids:["b1"]},
+   {d:"1978-06-29",t:"倒向苏联",ids:["b2","b3"]},
+   {d:"1978-11-01",t:"庭毫山流血事件",ids:["b11"]},
+   {d:"1978-11-03",t:"苏越结盟",ids:["b4"]},
+   {d:"1978-12-07",t:"军委定下决心",ids:["b8"]},
+   {d:"1978-12-15",show:"1978年12月",t:"开枪开炮 · 埋雷设障",ids:["b12"]},
+   {d:"1978-12-25",t:"出兵柬埔寨",ids:["b5"]},
+   {d:"1979-01-28",t:"中美建交",ids:["b6"]},
+   {d:"1979-02-10",t:"越军的误判",ids:["b9"]},
+   {d:"1979-02-12",t:"会前外交战",ids:["b10"]},
+   {d:"1979-02-16",t:"开战前夜",ids:["b7"]},
+   {d:"1979-02-17",t:"双方怎么说",ids:["b13"]}
+ ]},
+ {key:"war",name:"1979 战争",sub:"2.17—3.16",mapTitle:"1979：两个方向的进攻轴线",stops:[
+   {d:"1979-02-17",t:"第一阶段 · 全线突破",ids:["w1","w2"]},
+   {d:"1979-02-18",t:"外交战场",ids:["w3"]},
+   {d:"1979-02-20",t:"西线拿下老街",ids:["w4"]},
+   {d:"1979-02-22",t:"合围高平 · 代乃阻击",ids:["w5b"]},
+   {d:"1979-02-23",t:"东线攻占同登",ids:["w5"]},
+   {d:"1979-02-25",t:"高平、柑塘易手",ids:["w6"]},
+   {d:"1979-02-27",t:"第二阶段 · 谅山总攻",ids:["w7"]},
+   {d:"1979-03-04",t:"谅山陷落",ids:["w8"]},
+   {d:"1979-03-05",t:"宣布撤军",ids:["w9"]},
+   {d:"1979-03-12",t:"第三阶段 · 交替回撤",ids:["w10"]},
+   {d:"1979-03-16",t:"撤军完成",ids:["w11"]},
+   {d:"1979-05-21",t:"战俘交换",ids:["w12"]}
+ ]},
+ {key:"decade",name:"边境十年",sub:"1979—1990",mapTitle:"十年对峙：骑线制高点与两山",stops:[
+   {d:"1980-01-01",show:"1979—1980",t:"骑线制高点对峙",ids:["d1"]},
+   {d:"1981-05-05",t:"收复法卡山、扣林山",ids:["d2"]},
+   {d:"1984-04-02",t:"炮火准备 · 老山方向",ids:["d9"]},
+   {d:"1984-04-28",t:"收复老山、者阴山",ids:["d3"]},
+   {d:"1984-07-12",t:"7·12 松毛岭大战",ids:["d4"]},
+   {d:"1986-07-10",t:"黎笋去世 · 转向",ids:["d8"]},
+   {d:"1987-06-01",show:"1987",t:"两山轮战",ids:["d5"]},
+   {d:"1988-03-14",t:"赤瓜礁海战",ids:["d6"]},
+   {d:"1990-02-01",show:"1990年2月",t:"最后一次交火",ids:["d7"]}
+ ]},
+ {key:"peace",name:"和解",sub:"1990—2009",mapTitle:"从战场到口岸",stops:[
+   {d:"1990-09-03",t:"成都秘密会晤",ids:["p1"]},
+   {d:"1991-11-05",t:"关系正常化",ids:["p2"]},
+   {d:"1999-12-30",t:"陆地边界条约",ids:["p3"]},
+   {d:"2000-12-25",t:"北部湾划界",ids:["p4"]},
+   {d:"2008-12-31",t:"勘界立碑完成",ids:["p5"]}
+ ]},
+ {key:"record",name:"双方全记录",sub:"我军 / 越军",mapTitle:""},
+ {key:"data",name:"影响与数据",sub:"口径 · 代价",mapTitle:""}
+];
+
+/* ============ 3. 地图数据 ============ */
+var MAPD={"CN":"M-30.0,461.2L-26.5,462.9L-29.0,475.4L-22.6,482.6L1.9,475.7L8.4,477.6L8.0,482.5L15.6,481.1L21.7,486.5L26.8,485.0L26.0,480.4L32.2,477.9L21.4,467.9L23.5,443.0L30.7,439.4L22.8,428.3L25.3,419.3L17.4,406.8L10.6,403.3L5.5,390.9L6.2,382.3L1.6,375.4L10.2,372.4L18.8,352.1L25.7,350.4L36.8,362.1L39.0,357.0L47.3,355.5L58.4,357.0L60.6,360.2L71.8,358.9L75.4,350.4L88.3,337.1L85.4,333.0L96.6,323.1L101.6,325.4L103.4,330.5L108.8,328.5L133.3,340.0L140.2,352.3L152.8,357.0L154.6,351.4L164.3,346.2L164.3,339.3L174.4,333.2L180.8,321.2L190.2,326.3L190.9,332.5L200.3,341.8L208.9,323.2L214.7,320.0L246.0,349.2L257.2,321.7L274.1,317.5L273.7,325.8L284.2,331.3L305.4,316.3L309.0,319.4L320.2,318.2L332.4,307.5L329.9,291.5L336.0,288.1L337.1,283.7L343.6,284.6L365.5,273.3L370.2,274.6L373.4,268.0L381.4,263.5L384.2,269.5L393.2,273.3L403.0,284.4L405.1,294.0L419.2,295.5L435.4,309.6L446.2,306.7L449.8,302.5L463.1,302.5L470.3,305.3L473.5,313.6L477.5,315.0L495.8,311.1L498.7,307.5L508.1,310.4L511.0,314.8L516.7,313.3L523.2,320.2L529.0,320.4L518.2,342.0L507.7,340.5L502.7,356.2L504.1,365.4L513.5,369.0L516.4,377.6L513.8,381.0L517.4,393.3L515.3,403.1L522.8,399.2L536.5,403.3L541.9,408.3L550.9,407.3L548.8,417.6L567.1,428.4L577.2,428.1L584.8,440.1L592.7,434.9L600.2,441.8L624.4,434.2L631.2,435.2L649.2,451.4L647.0,456.8L658.2,451.4L652.1,451.4L653.9,448.0L649.2,445.2L657.1,446.3L656.8,443.8L667.6,442.4L671.2,439.7L670.4,435.7L673.7,435.5L675.1,440.4L671.2,449.9L678.4,445.5L684.1,427.4L683.8,430.3L688.4,432.7L692.4,430.1L691.0,433.5L697.1,432.8L691.7,437.0L694.2,437.7L693.1,441.6L690.6,439.9L688.8,442.4L697.1,443.8L696.4,440.4L699.2,437.7L698.2,441.8L701.8,440.4L701.0,435.5L704.6,435.7L706.4,432.1L705.4,430.1L701.8,432.8L703.2,428.1L700.7,432.8L697.8,430.1L700.7,428.1L696.4,425.9L699.2,425.9L700.7,421.2L694.9,413.4L695.6,408.2L697.8,405.5L696.4,413.7L699.2,414.4L700.7,408.8L707.2,404.8L706.1,410.5L709.3,408.2L713.6,411.0L707.2,418.6L707.9,421.8L710.8,421.2L709.3,425.9L712.9,425.4L711.5,421.2L713.6,422.5L714.4,417.8L715.4,420.5L717.6,418.5L714.7,424.9L718.3,425.9L715.1,426.7L718.3,429.4L722.6,425.4L721.2,431.1L725.2,430.8L725.2,435.0L721.2,435.0L724.4,439.7L729.5,435.5L736.0,435.5L732.0,435.5L733.4,431.5L728.0,427.4L729.1,424.6L731.6,428.4L734.5,425.6L732.0,419.8L728.0,418.5L730.2,418.1L736.0,418.5L735.6,421.8L737.4,419.8L737.0,424.6L742.4,423.4L736.0,426.7L735.6,431.6L742.8,438.6L756.8,435.5L754.7,439.7L763.7,439.7L764.4,449.0L754.0,454.9L763.7,459.8L764.8,456.1L771.6,458.3L773.8,451.4L774.5,456.8L782.0,451.9L784.2,454.6L792.5,454.8L797.2,450.0L797.2,453.4L802.9,450.9L807.2,441.8L796.4,433.5L802.2,433.5L799.3,430.1L806.9,424.0L809.4,425.4L806.2,432.8L808.7,436.9L811.6,435.0L810.8,442.4L813.7,443.1L817.7,437.7L814.8,448.0L820.9,451.7L827.4,451.4L824.9,445.5L827.4,441.8L831.4,454.1L834.2,449.4L836.0,451.7L844.3,450.7L840.4,460.9L842.5,463.7L830.6,464.4L828.8,467.1L826.7,464.4L827.4,478.4L825.2,483.7L820.6,482.1L817.0,487.7L821.3,496.7L816.2,507.3L821.6,519.3L820.6,515.7L823.8,519.3L823.1,514.6L826.0,514.6L825.6,525.0L828.8,530.9L836.0,528.4L834.2,531.6L824.9,534.0L824.5,537.0L830.3,538.4L832.1,544.6L835.0,540.4L832.1,548.3L839.6,550.7L841.8,555.6L843.2,549.3L844.3,553.9L846.5,552.2L851.5,558.1L848.3,564.9L840.4,556.9L836.4,559.0L843.2,568.2L841.8,576.0L853.7,569.8L862.7,575.2L873.9,572.5L878.2,574.7L890.0,569.9L889.7,538.4L881.4,536.3L882.9,532.3L880.0,534.3L883.6,527.4L880.7,526.0L882.1,520.6L884.3,517.9L888.3,528.7L890.0,520.2L883.6,514.0L866.3,515.7L864.1,501.4L870.6,491.8L872.1,497.2L890.0,482.4L890.0,475.3L882.9,466.4L889.0,467.1L885.7,456.5L889.0,454.8L886.8,457.5L890.0,461.3L890.0,-100.0L-30.0,-100.0L-30.0,461.2ZM727.4,660.0L890.0,660.0L890.0,602.8L884.7,594.3L876.0,596.6L865.6,593.2L863.1,598.6L856.9,601.5L864.9,599.3L862.3,602.5L851.5,604.2L849.0,609.4L845.0,606.9L847.6,606.7L844.3,600.8L838.2,601.5L833.5,606.9L831.7,600.8L830.6,604.9L823.8,602.2L821.6,604.2L822.0,599.0L809.4,600.7L802.6,604.9L805.8,608.3L801.5,609.4L801.8,611.8L808.3,614.3L796.4,616.5L794.3,612.7L782.0,610.8L780.2,607.8L766.6,619.4L766.2,627.5L777.4,620.6L780.6,621.3L777.4,624.3L780.6,628.9L771.2,627.5L765.5,635.1L750.7,640.4L744.6,650.8L742.4,649.3L727.4,660.0ZM887.5,595.6L890.0,601.4L890.0,593.3L888.3,591.9L887.5,595.6ZM874.6,501.4L890.0,499.4L889.0,490.4L878.9,492.6L883.6,493.1L877.5,494.0L878.9,496.7L874.6,497.2L874.6,501.4ZM759.0,495.8L760.1,497.8L763.7,495.0L759.0,495.8Z","VN":"M62.0,360.2L70.7,375.4L98.4,397.9L97.7,404.3L109.2,409.9L115.0,434.2L122.2,433.8L127.6,429.3L130.8,416.4L134.8,429.6L144.8,426.2L147.4,442.4L135.1,457.5L142.0,454.9L137.6,469.5L130.1,474.5L138.7,477.2L138.4,482.3L144.1,491.6L151.3,496.0L162.8,514.6L185.9,521.3L194.2,518.4L199.6,525.2L207.8,526.7L218.6,534.3L221.5,532.8L220.8,527.9L225.8,525.0L228.4,515.4L251.0,509.1L259.3,503.9L278.0,510.8L288.8,522.8L295.3,523.7L299.3,529.7L311.5,535.3L304.3,546.5L299.6,548.8L294.6,546.5L286.0,556.1L293.2,559.0L307.6,558.6L318.0,565.9L315.1,577.4L319.1,580.4L332.0,577.9L340.7,582.4L340.3,586.5L346.4,592.4L345.0,600.5L337.4,601.7L328.1,609.1L325.6,613.3L331.7,615.2L330.6,620.9L316.2,628.9L311.5,639.3L300.7,639.7L288.1,631.4L279.5,634.4L273.0,629.4L259.0,634.8L250.0,631.9L251.8,640.0L257.2,644.1L259.3,650.5L253.9,658.8L248.3,660.0L428.5,659.6L431.4,657.7L431.8,642.5L429.2,639.7L431.8,641.2L436.8,627.9L439.7,627.9L442.9,621.9L436.8,622.6L442.9,620.6L445.4,607.4L452.6,600.2L458.4,603.5L460.6,596.6L460.6,603.5L467.8,600.8L487.9,578.9L507.0,576.9L504.8,570.8L499.8,569.1L509.2,572.5L505.9,562.3L508.4,561.8L509.5,555.2L502.0,556.3L508.1,552.2L508.1,545.3L502.0,546.0L512.8,540.0L508.8,533.6L513.8,537.2L520.3,534.0L516.4,530.3L526.8,528.7L530.8,532.3L521.8,519.3L525.0,519.6L524.3,515.1L520.0,511.7L521.8,509.7L524.3,511.7L525.4,506.1L518.5,504.8L515.6,500.0L518.2,499.4L514.2,498.0L529.7,497.5L532.2,502.4L527.2,504.3L533.3,506.3L536.9,511.7L537.6,506.3L544.4,509.0L535.4,500.7L550.2,504.9L552.7,502.7L549.8,498.0L553.8,500.0L552.7,496.7L554.5,500.0L555.2,496.7L558.5,499.4L565.0,496.0L556.7,504.1L569.6,506.3L573.2,502.1L571.1,500.7L587.3,497.2L586.6,472.7L594.5,471.2L591.6,467.1L602.8,470.1L602.4,465.1L605.3,469.5L610.0,470.1L616.8,458.8L624.7,458.8L628.7,454.1L628.7,450.6L625.1,449.4L628.3,447.5L631.9,450.7L632.6,447.3L633.7,451.2L636.2,447.0L640.9,447.3L643.1,455.8L649.2,451.4L633.4,436.0L628.0,434.3L603.1,439.1L601.0,441.8L595.9,440.4L592.7,434.9L584.8,440.1L577.2,428.1L567.1,428.4L548.8,417.6L550.9,407.3L541.9,408.3L536.5,403.3L522.8,399.2L515.3,403.1L517.4,393.3L513.8,381.0L516.4,377.6L513.5,369.0L504.1,365.4L502.7,356.2L507.7,340.5L518.2,342.0L529.0,320.4L523.2,320.2L516.7,313.3L511.0,314.8L508.1,310.4L498.7,307.5L495.8,311.1L477.5,315.0L473.5,313.6L470.3,305.3L463.1,302.5L449.8,302.5L446.2,306.7L435.4,309.6L419.2,295.5L405.1,294.0L403.0,284.4L393.2,273.3L384.2,269.5L381.4,263.5L373.4,268.0L370.2,274.6L365.5,273.3L343.6,284.6L337.1,283.7L336.0,288.1L329.9,291.5L332.4,307.5L320.2,318.2L309.0,319.4L305.4,316.3L284.2,331.3L273.7,325.8L274.1,317.5L257.2,321.7L246.0,349.2L214.7,320.0L208.9,323.2L200.3,341.8L190.9,332.5L190.2,326.3L182.3,321.0L174.4,333.2L164.3,339.3L164.3,346.2L154.6,351.4L154.6,356.0L151.0,357.0L140.2,352.3L133.3,340.0L108.8,328.5L103.4,330.5L101.6,325.4L96.6,323.1L85.4,333.0L88.3,337.1L75.4,350.4L73.2,357.3L62.0,360.2ZM540.8,518.1L548.4,525.5L553.1,525.4L551.6,527.4L554.5,529.6L557.4,526.7L553.1,521.3L557.4,522.0L556.7,518.6L560.6,520.0L545.9,512.4L540.8,518.1ZM526.4,512.4L531.1,515.7L531.8,512.4L534.7,520.3L538.7,520.5L532.6,508.5L528.6,507.0L526.4,512.4ZM596.3,518.6L604.6,508.1L605.3,502.7L601.7,510.5L597.0,511.7L596.3,518.6ZM623.6,499.7L625.8,501.7L624.0,506.3L629.4,500.7L623.6,499.7ZM589.4,510.3L601.3,507.6L606.0,496.5L600.6,498.0L599.2,503.6L589.4,510.3ZM606.0,501.4L613.2,488.0L609.2,491.1L606.0,501.4ZM587.3,494.1L597.0,490.4L610.7,478.2L603.1,480.1L595.6,472.5L587.3,494.1ZM632.6,463.0L637.3,462.5L634.1,465.1L644.5,463.2L649.9,459.7L632.6,463.0ZM583.3,511.7L586.9,514.2L589.4,512.5L583.3,511.7ZM631.6,499.4L632.6,501.0L635.5,496.7L631.6,499.4Z","KH":"","LA":"M-30.0,660.0L248.3,660.0L253.9,658.8L259.3,650.5L257.2,644.1L251.8,640.0L250.0,631.9L259.0,634.8L273.0,629.4L279.5,634.4L288.1,631.4L300.7,639.7L311.5,639.3L316.2,628.9L330.6,620.9L331.7,615.2L325.9,613.8L326.3,611.5L337.4,601.7L345.0,600.5L346.4,592.4L340.3,586.5L340.7,582.4L332.0,577.9L315.8,578.7L318.4,566.7L309.0,559.3L286.0,556.1L294.6,546.5L299.6,548.8L304.3,546.5L311.5,535.3L299.3,529.7L295.3,523.7L288.8,522.8L278.8,511.3L272.3,510.8L269.4,507.0L255.7,504.1L251.0,509.1L228.4,515.4L225.8,525.0L220.8,527.9L221.5,532.8L218.6,534.3L207.8,526.7L199.6,525.2L194.2,518.4L185.9,521.3L162.8,514.6L151.3,496.0L144.1,491.6L138.4,482.3L138.7,477.2L130.1,474.5L137.6,469.5L142.0,454.9L135.1,457.5L147.4,442.4L144.8,426.2L134.8,429.6L130.8,416.4L127.6,429.3L122.2,433.8L115.0,434.2L109.2,409.9L97.7,404.3L98.4,397.9L70.7,375.4L59.5,357.7L40.8,356.3L34.3,361.7L28.6,352.8L21.4,350.9L15.6,355.3L10.2,372.4L1.6,375.4L6.2,382.3L5.5,390.9L10.6,403.3L17.4,406.8L25.3,419.3L22.8,428.3L30.7,439.4L23.5,443.0L21.4,467.9L32.2,477.9L26.0,480.4L26.8,485.0L21.7,486.5L15.6,481.1L8.0,482.5L8.4,477.6L1.9,475.7L-22.6,482.6L-29.0,475.4L-26.5,462.9L-30.0,461.2L-30.0,641.3L-24.4,645.2L-26.2,652.8L-30.0,654.3L-30.0,660.0Z","TH":"M-30.0,654.3L-24.4,647.8L-29.0,641.0L-30.0,654.3Z","MM":"","LAND":"M-30.0,660.0L427.5,660.0L431.4,657.7L431.8,642.5L429.2,639.7L431.8,639.0L431.8,641.2L436.8,627.9L439.7,627.9L442.9,621.9L436.8,622.6L441.5,619.2L442.9,620.6L445.4,607.4L452.6,600.2L458.4,603.5L460.6,596.6L460.6,603.5L467.8,600.8L470.3,595.3L469.6,598.6L476.0,593.9L487.9,578.9L507.0,576.9L504.8,570.8L499.8,569.1L509.2,572.5L505.9,562.3L508.4,561.8L509.5,555.2L502.0,556.3L508.1,552.2L508.1,545.3L502.0,546.0L512.8,540.0L508.8,533.6L513.8,537.2L520.3,534.0L516.4,530.3L526.8,528.7L530.8,532.3L529.0,526.9L521.8,519.3L525.0,519.6L524.3,515.1L520.0,511.7L521.8,509.7L524.3,511.7L525.4,506.1L518.5,504.8L515.6,500.0L518.2,499.4L514.2,498.0L521.8,499.4L523.2,497.0L529.7,497.5L532.2,502.4L527.2,504.3L533.3,506.3L536.9,511.7L537.6,506.3L540.1,509.1L544.4,509.0L535.4,500.7L550.2,504.9L552.7,502.7L549.8,498.0L553.8,500.0L552.7,496.7L554.5,500.0L555.2,496.7L556.3,499.0L558.8,497.2L558.5,499.4L565.0,496.0L556.7,504.1L569.6,506.3L573.2,502.1L571.1,500.7L587.3,497.2L585.5,491.8L588.7,481.5L585.5,480.8L586.6,472.7L594.5,471.2L591.6,467.1L602.8,470.1L602.4,465.1L605.3,469.5L610.0,470.1L616.8,458.8L624.7,458.8L628.7,454.1L628.7,450.6L625.1,448.7L628.3,447.5L631.9,450.7L632.6,447.3L633.7,451.2L636.2,447.0L637.7,448.7L639.8,446.8L642.0,448.2L643.1,455.8L649.2,451.4L647.0,456.8L658.2,451.4L652.1,451.4L651.0,449.4L653.9,448.0L649.2,445.2L657.1,446.3L656.8,443.8L667.6,442.4L671.2,439.7L669.7,436.4L673.7,435.5L675.1,441.8L671.2,449.9L681.2,441.8L679.4,441.1L680.5,437.0L682.7,437.0L681.2,431.8L684.1,427.4L683.8,430.3L688.4,432.7L692.4,430.1L691.0,433.5L697.1,432.8L691.7,437.0L694.2,437.7L693.1,441.6L690.6,439.9L688.8,442.4L697.1,443.8L696.4,440.4L699.2,437.7L700.7,439.7L698.9,439.2L698.2,441.8L701.8,440.4L703.2,437.0L701.0,435.5L704.6,435.7L706.4,432.1L705.4,430.1L701.8,432.8L703.2,428.1L700.7,432.8L697.8,430.1L700.7,428.1L696.4,425.9L699.2,425.9L700.7,421.2L694.9,413.4L697.8,405.5L696.4,413.7L699.2,414.4L698.5,412.2L701.8,411.0L700.7,408.8L703.9,408.5L705.4,404.8L707.5,406.5L706.1,410.5L709.3,408.2L713.6,411.0L706.8,420.5L710.8,421.2L709.3,425.9L712.9,425.4L711.5,421.2L713.6,422.5L714.4,417.8L715.4,420.5L717.6,418.5L714.7,424.9L718.3,425.9L715.1,426.7L718.3,429.4L722.6,425.4L721.2,431.1L723.7,432.8L725.2,430.8L725.2,435.0L721.2,435.0L724.4,439.7L729.5,435.5L734.9,437.4L736.0,435.5L732.0,435.5L733.4,431.5L728.0,427.4L729.1,424.6L731.3,424.7L731.6,428.4L734.5,425.6L732.0,419.8L728.0,418.5L730.2,418.1L736.0,418.5L735.6,421.8L737.4,419.8L737.0,424.6L742.4,423.4L736.0,426.7L735.6,431.6L740.3,433.5L742.8,438.6L749.3,439.1L756.8,435.5L754.7,439.7L763.7,439.7L764.4,449.0L756.1,451.9L754.0,454.9L763.7,459.8L765.5,459.7L764.8,456.1L771.6,458.3L773.8,451.4L774.5,456.8L779.9,455.6L782.0,451.9L784.2,454.6L792.5,454.8L797.2,450.0L797.2,453.4L802.9,450.9L807.2,441.8L802.9,436.4L796.4,433.5L802.2,433.5L799.3,430.1L806.9,424.0L809.4,425.9L806.2,429.3L806.2,432.8L808.7,436.9L811.6,435.0L810.8,442.4L813.7,443.1L813.7,439.9L817.7,437.7L814.8,448.0L820.9,451.7L827.4,451.4L824.9,445.5L824.9,442.4L827.4,441.8L827.0,444.8L829.9,444.5L831.4,454.1L834.2,449.4L836.0,451.7L844.3,450.7L842.5,453.4L845.0,454.1L840.4,460.9L842.5,463.7L830.6,464.4L828.8,467.1L826.7,464.4L827.4,478.4L825.2,483.7L820.6,482.1L817.0,487.7L821.3,496.7L819.8,496.0L818.0,500.5L819.1,504.1L816.2,507.3L816.6,511.8L821.6,519.3L820.6,515.7L823.8,519.3L823.1,514.6L826.0,514.6L827.4,523.3L825.6,525.0L828.8,530.9L836.0,528.4L834.2,531.6L832.8,530.3L825.2,532.6L824.5,537.0L830.3,538.4L832.1,544.6L835.0,540.4L832.1,548.3L839.6,550.7L841.8,555.6L843.2,549.3L844.3,553.9L845.8,554.9L846.5,552.2L851.5,558.1L848.3,564.9L840.4,556.9L836.4,559.0L843.2,568.2L841.8,576.0L853.7,569.8L862.7,575.2L873.9,572.5L878.2,574.7L886.1,569.4L890.0,569.9L889.7,538.4L886.5,537.9L886.5,535.7L881.4,536.3L882.9,532.3L880.0,534.3L883.6,527.4L880.7,526.0L883.2,523.2L882.1,520.6L884.3,517.9L885.0,525.4L888.3,528.7L890.0,520.2L883.6,514.0L866.3,515.7L865.6,512.4L867.7,513.7L864.1,501.4L870.6,491.8L872.1,497.2L890.0,482.4L890.0,475.3L882.9,466.4L889.0,467.1L885.7,456.5L889.0,454.8L886.8,457.5L890.0,461.3L890.0,-100.0L-30.0,-100.0L-30.0,660.0ZM540.8,518.1L548.4,525.5L553.1,525.4L551.6,527.4L554.5,527.4L554.5,529.6L557.4,526.7L553.1,521.3L557.4,522.0L556.7,518.6L558.1,521.1L558.1,519.3L560.6,520.0L554.2,516.9L553.4,514.2L550.6,515.7L545.9,512.4L540.8,518.1ZM874.6,501.4L876.7,502.7L890.0,499.4L889.0,490.4L878.9,492.6L883.6,493.1L877.5,494.0L878.9,496.7L874.6,497.2L876.4,499.5L874.6,501.4ZM587.3,494.1L588.7,495.3L597.0,490.4L610.7,478.2L603.1,480.1L602.4,476.9L595.6,472.5L594.8,479.4L592.0,480.3L587.3,494.1ZM596.3,518.6L604.6,508.1L605.3,502.7L601.7,510.5L597.0,511.7L596.3,518.6ZM623.6,499.7L625.8,501.7L624.0,506.3L627.2,504.3L627.2,500.7L629.4,500.7L624.4,498.0L623.6,499.7ZM606.0,501.4L607.8,501.7L613.2,488.0L609.2,491.1L606.0,501.4ZM621.1,469.3L631.9,464.6L628.3,464.4L621.1,469.3ZM632.6,463.0L637.3,462.5L634.1,465.1L644.5,463.2L649.9,459.7L632.6,463.0ZM759.0,495.8L760.1,497.8L763.7,495.0L762.2,493.4L759.0,495.8ZM583.3,511.7L586.9,514.2L589.4,512.5L583.3,511.7ZM631.6,499.4L632.6,501.0L635.5,496.7L631.6,499.4ZM526.4,512.4L531.1,515.7L531.8,512.4L534.7,520.3L538.7,520.5L532.6,508.5L528.6,507.0L526.4,512.4ZM589.4,510.3L601.3,507.6L606.0,496.5L600.6,498.0L599.2,503.6L589.4,510.3ZM727.4,660.0L890.0,660.0L890.0,602.8L884.7,594.3L876.0,596.6L865.6,593.2L863.1,598.6L856.9,601.5L864.9,599.3L862.3,602.5L851.5,604.2L849.0,609.4L845.0,606.9L847.6,606.7L844.3,600.8L838.2,601.5L833.5,606.9L831.7,600.8L830.6,604.9L823.8,602.2L821.6,604.2L822.0,599.0L809.4,600.7L802.6,604.9L805.8,608.3L801.5,609.4L801.8,611.8L808.3,614.3L802.6,613.8L796.4,616.5L794.3,612.7L791.4,613.8L782.0,610.8L780.2,607.8L766.6,619.4L766.2,627.5L777.4,620.6L780.6,621.3L777.4,624.3L780.6,628.9L771.2,627.5L765.5,635.1L750.7,640.4L744.6,650.8L742.4,649.3L727.4,660.0ZM887.5,595.6L890.0,601.4L890.0,593.3L888.3,591.9L887.5,595.6Z"};var BORDER=[[102.1204,22.3978],[102.1456,22.4215],[102.2176,22.4114],[102.232,22.4266],[102.2536,22.4958],[102.3832,22.6292],[102.3544,22.6697],[102.394,22.6798],[102.4264,22.7457],[102.4444,22.766],[102.466,22.7693],[102.5164,22.7457],[102.5344,22.695],[102.5596,22.695],[102.5884,22.7153],[102.6136,22.6917],[102.6928,22.6697],[102.7504,22.6258],[102.8332,22.6005],[102.9016,22.4772],[103.0096,22.4299],[103.0456,22.4401],[103.0456,22.4857],[103.1428,22.538],[103.1464,22.5566],[103.1284,22.5785],[103.1428,22.6072],[103.2436,22.668],[103.3084,22.7879],[103.3228,22.7896],[103.3588,22.7761],[103.402,22.7372],[103.4092,22.6748],[103.474,22.592],[103.5028,22.5819],[103.546,22.6309],[103.546,22.7001],[103.5892,22.7676],[103.6468,22.7997],[103.8664,22.5751],[103.8952,22.5684],[103.9168,22.5329],[103.96,22.5076],[103.9852,22.5279],[103.9852,22.5701],[104.0248,22.7187],[104.0716,22.7828],[104.2408,22.8251],[104.23,22.7828],[104.2372,22.7423],[104.3416,22.6866],[104.4496,22.7457],[104.554,22.8369],[104.59,22.8065],[104.608,22.8234],[104.662,22.8115],[104.7016,22.8183],[104.7736,22.896],[104.824,22.9247],[104.8276,22.9551],[104.7988,23.0851],[104.86,23.1189],[104.8708,23.1628],[104.896,23.1695],[104.9356,23.1543],[105.0473,23.2269],[105.1553,23.2675],[105.2021,23.254],[105.2345,23.3198],[105.2921,23.3671],[105.3137,23.3654],[105.3425,23.3046],[105.3749,23.281],[105.4325,23.2675],[105.4721,23.1949],[105.5297,23.156],[105.5513,23.0598],[105.6917,23.0446],[105.7565,23.0057],[105.8537,22.9044],[105.8753,22.9281],[105.9617,22.9331],[105.9977,22.9753],[106.1309,22.9753],[106.2029,22.9466],[106.2353,22.8639],[106.2749,22.8504],[106.4585,22.8892],[106.4873,22.9247],[106.5809,22.896],[106.6097,22.8521],[106.6673,22.8673],[106.7321,22.798],[106.7897,22.7964],[106.8005,22.7845],[106.7933,22.7727],[106.7465,22.744],[106.6817,22.5802],[106.6457,22.5684],[106.6061,22.6106],[106.5773,22.5954],[106.5269,22.4384],[106.5413,22.3455],[106.6349,22.31],[106.6637,22.2239],[106.6385,22.1902],[106.6745,22.0669],[106.6493,21.996],[106.6529,21.9689],[106.6745,21.9622],[106.7285,22.0078],[106.7825,21.9757],[106.8653,21.9673],[106.9193,21.9166],[106.9697,21.9352],[107.0093,21.9267],[107.0201,21.893],[106.9877,21.844],[106.9877,21.8237],[107.0957,21.7781],[107.1713,21.7157],[107.2109,21.7055],[107.2721,21.719],[107.3045,21.6886],[107.3297,21.616],[107.3477,21.5991],[107.4269,21.6515],[107.4557,21.6312],[107.4593,21.5958],[107.5097,21.5823],[107.5313,21.6093],[107.6141,21.6059],[107.6897,21.6245],[107.7437,21.6582],[107.7797,21.6566],[107.8337,21.6397],[107.8661,21.589],[107.9921,21.486]];
+
+var PLACES=[
+ {id:"kunming",n:"昆明",lon:102.71,lat:25.04,side:"cn",dx:-2,dy:-13,eras:["pre","war"]},
+ {id:"nanning",n:"南宁",lon:108.32,lat:22.82,side:"cn",dx:0,dy:-13,eras:["pre","war","decade","peace"]},
+ {id:"pingxiang",n:"凭祥",lon:106.78,lat:22.13,side:"cn",dx:17,dy:-3,eras:["war","decade","peace"]},
+ {id:"laocai",n:"老街",lon:103.97,lat:22.44,side:"vn",dx:20,dy:10,capWar:"1979-02-19",eras:["pre","war","decade","peace"]},
+ {id:"caobang",n:"高平",lon:106.25,lat:22.66,side:"vn",dx:0,dy:-15,capWar:"1979-02-25",eras:["pre","war","decade","peace"]},
+ {id:"langson",n:"谅山",lon:106.76,lat:21.86,side:"vn",dx:-25,dy:17,capWar:"1979-03-04",eras:["pre","war","decade","peace"]},
+ {id:"hanoi",n:"河内",lon:105.85,lat:21.03,side:"vn",dx:17,dy:5,big:true,eras:["pre","war","decade","peace"]},
+ {id:"haiphong",n:"海防",lon:106.66,lat:20.87,side:"vn",dx:17,dy:5,eras:["pre","war","decade","peace"]},
+ {id:"fakashan",n:"法卡山",lon:106.60,lat:22.12,side:"front",dx:-34,dy:-2,capDecade:"1981-05-05",eras:["decade"]},
+ {id:"laoshan",n:"老山",lon:104.55,lat:23.08,side:"front",dx:-19,dy:16,capDecade:"1984-04-28",eras:["decade"]},
+ {id:"zheyinshan",n:"者阴山",lon:104.95,lat:23.12,side:"front",dx:20,dy:16,capDecade:"1984-04-30",eras:["decade"]}
+];
+
+var ARROWS=[
+ {d:"M660,326 Q 576,292 486,330",label:"东线",tl:[614,298]},
+ {d:"M534,362 Q 526,391 528,409",label:"",tl:null},
+ {d:"M134,112 Q 184,238 246,352",label:"西线",tl:[150,250]}
+];
+
+/* ============ 3.5 双方战事全记录 ============ */
+var REC=[
+ {sec:"战前 · 1978 — 1979.2"},
+ {d:"1950—1975",cn:"援越抗法与抗美：枪炮弹药、粮食物资、成套设备与工程项目；1965—1973 年派 32 万余人入越，千余名官兵牺牲",vn:"接受并用于抗法、抗美作战；北部公路、铁路、港口与工厂多由中国援建"},
+ {d:"1978.06",cn:"停止对越经济技术援助，撤回在越专家与工程人员",vn:"加入苏联主导的经互会，全面倒向苏联阵营"},
+ {d:"1978 夏—秋",cn:"外交抗议、边境增兵，边防部队进入战备；边民后撤",vn:"边境武装挑衅、开枪袭扰、侵占中方领土，驱赶迫害华侨"},
+ {d:"1978.11.03",cn:"判断南北受夹击，加强北线防御与战备",vn:"与苏联签订带军事同盟性质的《苏越友好合作条约》"},
+ {d:"1978.11.01",cn:"庭毫山地区遭越方武装人员开枪袭击，社员与民兵被打伤抓走",vn:"武装人员越境袭扰，事后否认是蓄意侵犯"},
+ {d:"1978.12",cn:"广西宁明廖行哨所遭越军枪击炮击，炮弹落点距哨所仅 1 米",vn:"越境埋设地雷、插竹签、架铁丝网，边民与民兵持续伤亡"},
+ {d:"1978.12.07",cn:"中央军委定下自卫还击决心；许世友东线、杨得志西线；北方各大军区一级战备",vn:"主力仍压在柬埔寨方向，北部以公安屯、地方独立团、省独立营与民兵守备"},
+ {d:"1978.12.25",cn:"加速向广西、云南方向集结部队与物资",vn:"20 万越军入侵柬埔寨，1979.1.7 攻占金边"},
+ {d:"1979.01—02",cn:"参战部队集结完毕，炮兵前推至边境一线",vn:"一线加固坑道暗堡、埋设地雷与竹签阵；二线 316A 师、346 师、第 3 师等机动待命"},
+ {d:"1979.02.17",cn:"《人民日报》通栏《是可忍，孰不可忍》；政府声明「被迫奋起自卫还击」",vn:"谴责中国「武装侵略」，要求立即停止、全部撤出"},
+ {d:"1979.02 上旬",cn:"就越南在边境的武装侵犯向联合国安理会提出交涉",vn:"在安理会辩称相关边境事件系「误炸」，否认蓄意侵犯"},
+
+ {sec:"第一阶段 · 突破边境（2.17 — 2.26）"},
+ {d:"02.17 05:00",cn:"全线炮火准备后，广西、云南两个方向同时突破边境",vn:"一线阵地遭炮火压制，依托坑道暗堡抵抗，边打边退"},
+ {d:"02.17",cn:"《人民日报》刊发《是可忍，孰不可忍》；政府声明为被迫自卫反击",vn:"河内进入战备，向苏联紧急求援"},
+ {d:"02.18",cn:"在联合国安理会阐述立场：有限反击、不谋求越南领土",vn:"向安理会控诉「侵略」，要求立即制止"},
+ {d:"02.19—20",cn:"西线强渡红河，2 月 20 日基本歼灭守敌、拿下老街市区",vn:"黄连山省方向守军损失严重，退守柑塘、沙巴一线"},
+ {d:"02.22",cn:"东线完成对高平地区合围；西线夺占代乃",vn:"316A 师北上增援柑塘，被阻击于代乃，未能前出"},
+ {d:"02.23",cn:"东线攻占谅山门户同登",vn:"「金星师」第 3 师一部被歼，残部退守谅山"},
+ {d:"02.25",cn:"攻占高平市；西线占领柑塘市与柑塘矿区",vn:"346 师退入周边山区，化整为零转入游击袭扰"},
+ {d:"02.26",cn:"第一阶段结束，转入调整与清剿",vn:"利用山地地形袭扰补给线，等待苏联施压"},
+
+ {sec:"第二阶段 · 攻克谅山（2.27 — 3.5）"},
+ {d:"02.27",cn:"东线三路对谅山发起总攻",vn:"第 3 师与地方部队依托扣马山、巴外山等要点死守"},
+ {d:"03.02",cn:"占领谅山市区奇穷河以北",vn:"退守奇穷河以南，继续抵抗"},
+ {d:"03.04",cn:"攻克谅山全城；以南即平原，距河内约 130 公里",vn:"防线崩溃，河内紧急布防、疏散市民，仍未抽回柬埔寨主力"},
+ {d:"03.05",cn:"外交部声明：目的已达，开始撤军；重申不要越南一寸土地",vn:"发布全国总动员令，号召全民抗敌"},
+
+ {sec:"第三阶段 · 交替回撤（3.6 — 3.16）"},
+ {d:"03.06—11",cn:"交替掩护、清剿残敌、有序回撤；对越北公路桥梁厂矿实施爆破",vn:"尾随回撤部队、小范围袭扰，不敢大规模决战"},
+ {d:"03.12",cn:"东线谅山方向率先完成撤军",vn:"重新进入谅山地区，收拢残部"},
+ {d:"03.13",cn:"西线云南方向部队全部撤回境内",vn:"收复老街等边境城镇，向前推进至边境一线"},
+ {d:"03.16",cn:"最后一批东线部队回到境内，大规模作战结束；随后沿边境一线重新构筑防御阵地",vn:"迅速抢占边境骑线制高点，构筑前沿工事"},
+
+ {sec:"战后 · 1979 — 1990"},
+ {d:"1979.05—06",cn:"分五批交还越俘 1,636 人",vn:"交还中方被俘人员 238 人"},
+ {d:"1979—1980",cn:"边境防御、炮火还击，掩护边民恢复生产",vn:"占领老山、者阴山、法卡山、扣林山等骑线制高点，观察并炮击我境内村寨道路"},
+ {d:"1981.05.05",cn:"广西边防部队收复法卡山",vn:"多次以连、营规模反扑，阵地反复易手"},
+ {d:"1981.05.07",cn:"云南边防部队收复扣林山，巩固云南边境防线",vn:"组织反扑未果，转长期炮击对峙"},
+ {d:"1984.04.02—27",cn:"集中炮火持续打击老山、者阴山越军阵地，为拔点创造条件",vn:"表面工事被毁，紧急补充兵员与弹药"},
+ {d:"1984.04.28",cn:"收复老山主峰阵地",vn:"退守周边高地，持续炮击与偷袭"},
+ {d:"1984.04.30",cn:"收复者阴山",vn:"组织反扑未果，转为长期对峙"},
+ {d:"1984.07.12",cn:"炮兵与步兵协同，击退越军最大规模反扑（松毛岭）",vn:"集结重兵发动「MB84」反扑，团师规模进攻，伤亡惨重"},
+ {d:"1984—1989",cn:"南京→济南→兰州→北京→成都军区依次赴滇轮战、守边防",vn:"轮换补兵、特工渗透、夜间偷袭摸哨、侦察捕俘，长期消耗对峙"},
+ {d:"1988.03.14",cn:"海军在赤瓜礁交火，随后控制永暑、华阳、东门、南薰、渚碧、赤瓜等礁盘",vn:"运输船被击沉，退出该海域行动"},
+ {d:"1990.02",cn:"老山方向最后一次交火后，边境基本停火",vn:"停止大规模行动，转秘密外交接触"},
+ {d:"1991.11",both:"发表联合公报，宣布中越关系正常化，结束十余年敌对状态"},
+
+ {sec:"和解 · 1999 — 2008"},
+ {d:"1999.12.30",both:"签署《中越陆地边界条约》，以条约方式解决陆地边界争议"},
+ {d:"2000.12.25",both:"签署北部湾领海、专属经济区和大陆架划界协定"},
+ {d:"2008.12.31",both:"陆地边界全线勘界立碑完成，边界线以法律形式最终确定"}
+];
+
+function renderRecord(){
+  var box=$("recList");
+  if(!box||box.getAttribute("data-done")) return;
+  var html="";
+  REC.forEach(function(r){
+    if(r.sec){ html+='<div class="rec-sec">'+r.sec+'</div>'; return; }
+    html+='<div class="rec"><div class="rec-d">'+r.d+'</div><div class="rec-b">';
+    if(r.both){ html+='<p class="both"><b>双方</b>'+r.both+'</p>'; }
+    else{
+      if(r.cn) html+='<p class="cn"><b>我军</b>'+r.cn+'</p>';
+      if(r.vn) html+='<p class="vn"><b>越军</b>'+r.vn+'</p>';
+    }
+    html+='</div></div>';
+  });
+  box.innerHTML=html;
+  box.setAttribute("data-done","1");
+}
+
+/* ============ 4. 工具 ============ */
+var NS="http://www.w3.org/2000/svg";
+function svg(tag,attrs,parent){
+  var e=document.createElementNS(NS,tag);
+  for(var k in attrs){ if(Object.prototype.hasOwnProperty.call(attrs,k)) e.setAttribute(k,attrs[k]); }
+  if(parent) parent.appendChild(e);
+  return e;
+}
+function proj(lon,lat){ return [ (lon-101.5)*100, (26-lat)*100 ]; }
+function defensePath(){
+  return "M"+BORDER.map(function(p){ var q=proj(p[0],p[1]+0.10); return q[0].toFixed(1)+","+q[1].toFixed(1); }).join(" L");
+}
+function fmt(d){
+  var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(d);
+  if(!m) return d;
+  return m[1]+"年"+(+m[2])+"月"+(+m[3])+"日";
+}
+function $(id){ return document.getElementById(id); }
+
+/* ============ 5. 地图绘制 ============ */
+var geo=$("geo"),gArrows=$("arrows"),gPlaces=$("places"),gMarks=$("marks");
+
+function buildGeo(target,terrain){
+  var geo=target||$("geo");
+
+  /* 海面 + 经纬网 */
+  svg("rect",{x:-300,y:-300,width:1400,height:1220,fill:"#03080c"},geo);
+  var gg="",lon,lat;
+  for(lon=102;lon<=109;lon+=1){ var q1=proj(lon,26.5),q2=proj(lon,19.5); gg+="M"+q1[0].toFixed(0)+","+q1[1].toFixed(0)+"L"+q2[0].toFixed(0)+","+q2[1].toFixed(0); }
+  for(lat=20;lat<=26;lat+=1){ var p1=proj(101,lat),p2=proj(109.6,lat); gg+="M"+p1[0].toFixed(0)+","+p1[1].toFixed(0)+"L"+p2[0].toFixed(0)+","+p2[1].toFixed(0); }
+  svg("path",{d:gg,fill:"none",stroke:"#0e2530","stroke-width":0.7,opacity:".5"},geo);
+
+  /* 陆地：中国 / 越南 / 老挝 */
+  svg("path",{d:MAPD.CN,fill:"#0f1b23",stroke:"#233f4d","stroke-width":1,opacity:"1"},geo);
+  svg("path",{d:MAPD.VN,fill:"#0d1720",stroke:"#233f4d","stroke-width":1,opacity:"1"},geo);
+  svg("path",{d:MAPD.LA,fill:"#0b141b",stroke:"#233f4d","stroke-width":1,opacity:"1"},geo);
+  if(MAPD.TH) svg("path",{d:MAPD.TH,fill:"#0b141b",stroke:"#233f4d","stroke-width":1,opacity:"1"},geo);
+
+  /* 海岸线 */
+  svg("path",{d:MAPD.LAND,fill:"none",stroke:"#3f8ba6","stroke-width":3.4,opacity:".16"},geo);
+  svg("path",{d:MAPD.LAND,fill:"none",stroke:"#5fa8c2","stroke-width":1.1,opacity:".5"},geo);
+
+  /* 红河 */
+  svg("path",{d:"M247,356 C 290,400 330,426 352,449 S 402,482 435,497 S 482,509 512,512",
+    fill:"none",stroke:"#356478",["stroke-width"]:2.2,opacity:".55"},geo);
+
+  /* 国界（中越） */
+  svg("path",{d:"M"+BORDER.map(function(pt){var q=proj(pt[0],pt[1]);return q[0].toFixed(1)+","+q[1].toFixed(1);}).join(" L"),
+    fill:"none",stroke:"#8ba2b4",["stroke-width"]:1.9,["stroke-dasharray"]:"8 5",opacity:".8"},geo);
+
+  /* 文字 */
+  var tx=function(t,x,y,cls){
+    var e=svg("text",{x:x,y:y,class:cls,"text-anchor":"middle"},geo);
+    e.textContent=t; return e;
+  };
+  tx("中 国",300,"150","t-country");
+  tx("越 南",330,"520","t-country");
+  tx("老 挝",150,"520","t-prov");
+  tx("云 南",170,"230","t-prov");
+  tx("广 西",620,"250","t-prov");
+  tx("北部湾","660","590","t-sea");
+
+  /* 指北针 + 图廓 */
+  svg("path",{d:"M700,138 L700,104 M692,114 L700,102 L708,114",fill:"none",stroke:"#5f7c8d","stroke-width":1.4,"stroke-linecap":"round"},geo);
+  var nn=svg("text",{x:700,y:96,class:"t-sea","text-anchor":"middle"},geo); nn.textContent="N";
+  svg("rect",{x:84,y:52,width:632,height:556,fill:"none",stroke:"#162934","stroke-width":1,opacity:".9"},geo);
+
+  if(terrain) contours(geo);
+}
+
+function contours(g){
+  var blobs=[[300,286,120],[470,326,92],[556,440,66],[368,470,76],[212,190,62],[170,330,74],[420,210,64],[626,306,72],[520,506,58],[300,120,70]];
+  blobs.forEach(function(b,bi){
+    for(var k=1;k<=3;k++){
+      var rx=b[2]*(0.4+k*0.2), ry=rx*0.74, pts=[];
+      for(var i=0;i<9;i++){
+        var ang=i/9*Math.PI*2, w=0.8+0.3*Math.sin(bi*2.3+i*2.1+k);
+        pts.push([b[0]+Math.cos(ang)*rx*w, b[1]+Math.sin(ang)*ry*w]);
+      }
+      var d="M"+pts[0][0].toFixed(1)+","+pts[0][1].toFixed(1);
+      for(var j=0;j<pts.length;j++){
+        var p0=pts[j], p1=pts[(j+1)%pts.length];
+        d+=" Q"+p0[0].toFixed(1)+","+p0[1].toFixed(1)+" "+((p0[0]+p1[0])/2).toFixed(1)+","+((p0[1]+p1[1])/2).toFixed(1);
+      }
+      svg("path",{d:d+" Z",fill:"none",stroke:"#1b2b38",["stroke-width"]:1,opacity:(0.42-k*0.09).toFixed(2)},g);
+    }
+  });
+}
+
+function statusOf(p,d,eraKey){
+  if(p.side==="front"){
+    if(eraKey==="decade"&&p.capDecade) return d>=p.capDecade?"fall":"front";
+    return "front";
+  }
+  if(eraKey==="war"&&p.capWar){
+    if(d>=p.capWar) return "fall";
+    if(d>="1979-02-16") return "hit";
+  }
+  return p.side;
+}
+
+function drawPlaces(eraKey,d){
+  while(gPlaces.firstChild) gPlaces.removeChild(gPlaces.firstChild);
+  PLACES.forEach(function(p){
+    if(p.eras&&p.eras.indexOf(eraKey)<0) return;
+    var q=proj(p.lon,p.lat),x=q[0],y=q[1];
+    var st=statusOf(p,d,eraKey);
+    var isCity=(p.side==="cn"||p.side==="vn");
+    var r=p.big?5.4:4.4;
+
+    if(st==="hit"){
+      svg("circle",{cx:x,cy:y,r:7,fill:"none",stroke:"#e2a13f","stroke-width":1.2,opacity:".9",class:"halo"},gPlaces);
+    }
+    if(st==="fall"&&isCity){
+      svg("circle",{cx:x,cy:y,r:r+7,fill:"url(#glowR)",opacity:".5"},gPlaces);
+    }
+    var dot;
+    if(p.side==="cn"){
+      dot=svg("circle",{cx:x,cy:y,r:r,fill:"#b8432f",stroke:"#ffb0a0","stroke-width":1.3,class:"pin"},gPlaces);
+    }else if(p.side==="front"){
+      dot=svg("circle",{cx:x,cy:y,r:r-0.6,fill:st==="fall"?"#e2543f":"#0e1720",stroke:"#5fa8d3","stroke-width":1.5,class:"pin"},gPlaces);
+    }else if(st==="fall"){
+      dot=svg("circle",{cx:x,cy:y,r:r,fill:"#e2543f",stroke:"#ffd0c6","stroke-width":1,class:"pin"},gPlaces);
+    }else if(st==="hit"){
+      dot=svg("circle",{cx:x,cy:y,r:r,fill:"#e2a13f",stroke:"#ffe0a3","stroke-width":1,class:"pin"},gPlaces);
+    }else{
+      dot=svg("circle",{cx:x,cy:y,r:r,fill:"#0e1720",stroke:"#5fa8d3","stroke-width":1.7,class:"pin"},gPlaces);
+    }
+    var cap=(eraKey==="war")?p.capWar:(eraKey==="decade"?p.capDecade:null);
+    if(cap){
+      dot.style.cursor="pointer";
+      dot.setAttribute("data-cap",cap);
+      dot.addEventListener("click",function(){ jumpToPlace(cap); });
+    }
+    var lbl=svg("text",{x:x+(p.dx||0),y:y+(p.dy||0),class:"t-city"+(p.big?" big":""),"text-anchor":"middle"},gPlaces);
+    lbl.textContent=p.n;
+  });
+}
+
+function note(t){ var el=document.getElementById("mapNote"); if(el) el.textContent=t; }
+
+function drawArrows(eraKey,d){
+  note("");
+  while(gArrows.firstChild) gArrows.removeChild(gArrows.firstChild);
+  while(gMarks.firstChild) gMarks.removeChild(gMarks.firstChild);
+  if(eraKey==="war"){
+    ARROWS.forEach(function(a){
+      var g=svg("g",{class:"arrow"},gArrows);
+      svg("path",{d:a.d,fill:"none",stroke:"#e2543f","stroke-width":2.2,opacity:".95","marker-end":"url(#arw)"},g);
+      if(a.label&&a.tl){
+        var t=svg("text",{x:a.tl[0],y:a.tl[1],class:"t-axis","text-anchor":"middle"},gArrows);
+        t.textContent=a.label;
+      }
+    });
+    note("谅山以南即为红河三角洲平原，距河内约 130 公里 —— 这是 3 月 4 日河内震动的原因。");
+  }
+  if(eraKey==="pre"){
+    note("1979年初：越南北部边境以地方部队、公安屯与民兵驻守，主力多在柬埔寨战场。");
+  }
+  if(eraKey==="war"&&d>="1979-03-16"){
+    svg("path",{d:defensePath(),fill:"none",stroke:"#e2543f","stroke-width":1.6,["stroke-dasharray"]:"3 4",opacity:".85"},gMarks);
+    var dl=svg("text",{x:332,y:246,class:"t-note","text-anchor":"middle"},gMarks);
+    dl.textContent="边境防御线 · 1979.3 起";
+    dl.style.fill="#c98f80";
+  }
+  if(eraKey==="decade"){
+    svg("path",{d:defensePath(),fill:"none",stroke:"#8a5a4f","stroke-width":1.4,["stroke-dasharray"]:"3 4",opacity:".7"},gMarks);
+    note("骑线制高点：老山 · 者阴山 · 法卡山；南沙方向另有 1988 年 3 月 14 日赤瓜礁海战。");
+  }
+  if(eraKey==="peace"){
+    note("友谊关口岸恢复通关，边境互市与跨境经济合作区兴起 —— 战场变成了生意场。");
+  }
+}
+
+/* ============ 6. 状态与渲染 ============ */
+var eraIdx=1, stopIdx=0, playing=false, timer=null;
+
+function curEra(){ return ERAS[eraIdx]; }
+function curStop(){ return curEra().stops[stopIdx]; }
+function layers(){
+  return {dip:$("tgDip").checked, cost:$("tgCost").checked, imp:$("tgImp").checked};
+}
+function visible(ev){
+  var L=layers();
+  if(ev.kind==="dip"&&!L.dip) return false;
+  if(ev.kind==="cost"&&!L.cost) return false;
+  return true;
+}
+
+function renderEras(){
+  var nav=$("eras"); nav.innerHTML="";
+  ERAS.forEach(function(e,i){
+    var b=document.createElement("button");
+    b.className="era"; b.setAttribute("role","tab");
+    b.setAttribute("aria-selected", i===eraIdx?"true":"false");
+    b.innerHTML="<b>"+e.name+"</b><i>"+e.sub+"</i>";
+    b.addEventListener("click",function(){ setEra(i); });
+    nav.appendChild(b);
+  });
+}
+
+function render(){
+  var e=curEra();
+  $("mapTitle").textContent=e.mapTitle;
+  var isData=(e.key==="data"), isRec=(e.key==="record"), flat=isData||isRec;
+  $("stage").hidden=flat;
+  $("controls").hidden=flat;
+  $("listwrap").hidden=flat;
+  $("datasec").hidden=!isData;
+  $("recsec").hidden=!isRec;
+  if(isRec) renderRecord();
+  if(flat) return;
+
+  var s=curStop();
+  $("play").textContent=(e.key==="war")?"🎬 电影推演":(playing?"❚❚ 暂停":"▶ 自动推演");
+  $("dateBadge").textContent=s.show||s.d;
+  $("stopLabel").textContent=s.t;
+  $("stopDate").textContent=s.show||fmt(s.d);
+
+  drawPlaces(e.key,s.d);
+  drawArrows(e.key,s.d);
+
+  /* 卡片 */
+  var wrap=$("cards"); wrap.innerHTML="";
+  var shown=0;
+  s.ids.forEach(function(id){
+    var ev=EV[id]; if(!ev||!visible(ev)) return;
+    shown++;
+    var cls="k-"+ev.kind;
+    var art=document.createElement("article");
+    art.className="card "+cls;
+    var time=ev.date+(ev.time?" "+ev.time:"");
+    var html='<div class="card-h"><time>'+time+'</time><span class="chip '+ev.kind+'">'+ev.tag+'</span></div>'+
+      '<h3>'+ev.title+'</h3><p>'+ev.desc+'</p>';
+    if(layers().imp) html+='<div class="impact"><b>影响</b><p>'+ev.impact+'</p></div>';
+    art.innerHTML=html;
+    wrap.appendChild(art);
+  });
+  if(!shown){
+    var p=document.createElement("div");
+    p.className="empty";
+    p.textContent="该节点的事件已被图层过滤，打开上方开关可查看。";
+    wrap.appendChild(p);
+  }
+
+  /* 时间轴 */
+  var sc=$("scrub");
+  sc.max=String(e.stops.length-1);
+  sc.value=String(stopIdx);
+  $("counter").textContent=(stopIdx+1)+" / "+e.stops.length;
+  var tk=$("ticks"); tk.innerHTML="";
+  var n=e.stops.length;
+  e.stops.forEach(function(_,i){
+    var i2=document.createElement("i");
+    i2.className="tk"+(i<=stopIdx?" on":"");
+    i2.style.left=(n<=1?0:(i/(n-1))*100)+"%";
+    tk.appendChild(i2);
+  });
+
+  /* 列表 */
+  var list=$("list"); list.innerHTML="";
+  e.stops.forEach(function(st,i){
+    var first=EV[st.ids[0]];
+    var row=document.createElement("div");
+    row.className="row"+(i===stopIdx?" cur":"");
+    row.innerHTML='<span class="dt">'+(st.show||st.d)+'</span>'+
+      '<span class="k k-'+(first?first.kind:"bg")+'"></span>'+
+      '<span class="tt">'+st.t+'</span>';
+    row.addEventListener("click",function(){ goTo(i); });
+    list.appendChild(row);
+  });
+}
+
+function goTo(i){
+  var e=curEra();
+  if(!e||!e.stops) return;
+  if(i<0||i>=e.stops.length) return;
+  stopIdx=i; render();
+}
+function setEra(i){
+  stopPause();
+  eraIdx=i; stopIdx=0;
+  if(!ERAS[i].stops){ renderEras(); render(); return; }
+  renderEras(); render();
+}
+function jumpToPlace(cap){
+  var e=curEra();
+  if(e.key!=="war"&&e.key!=="decade") return;
+  for(var i=0;i<e.stops.length;i++){
+    if(e.stops[i].d>=cap){ goTo(i); return; }
+  }
+  goTo(e.stops.length-1);
+}
+
+/* ============ 7. 播放 ============ */
+function startPlay(){
+  if(playing) return;
+  playing=true; $("play").textContent="❚❚ 暂停";
+  timer=setInterval(function(){
+    var e=curEra();
+    if(stopIdx>=e.stops.length-1){ stopPause(); return; }
+    goTo(stopIdx+1);
+  },1700);
+}
+function stopPause(){
+  playing=false; $("play").textContent="▶ 自动推演";
+  if(timer){ clearInterval(timer); timer=null; }
+}
+
+/* ============ 8. 绑定 ============ */
+function bind(){
+  $("play").addEventListener("click",function(){ if(curEra().key==="war"){ openCine(); return; } playing?stopPause():startPlay(); });
+  $("scrub").addEventListener("input",function(){ stopPause(); goTo(+this.value); });
+  ["tgDip","tgCost","tgImp"].forEach(function(id){
+    $(id).addEventListener("change",render);
+  });
+  document.addEventListener("keydown",function(ev){
+    if(/input|textarea|select/i.test((ev.target.tagName||""))) return;
+    if(ev.key==="ArrowRight"){ stopPause(); goTo(stopIdx+1); ev.preventDefault(); }
+    if(ev.key==="ArrowLeft"){ stopPause(); goTo(stopIdx-1); ev.preventDefault(); }
+    if(ev.key===" "){ playing?stopPause():startPlay(); ev.preventDefault(); }
+  });
+  $("infoBtn").addEventListener("click",function(){ $("mask").classList.add("on"); });
+  $("closeBtn").addEventListener("click",function(){ $("mask").classList.remove("on"); });
+  $("mask").addEventListener("click",function(ev){ if(ev.target===this) this.classList.remove("on"); });
+}
+
+/* ============ 9. 电影推演 ============ */
+var BASE_ASPECT=574/648, CINE_DUR=98;
+var cine={t:0,playing:false,raf:0,last:0,shot:-1,built:false,muted:false,ctx:null,timer:null,camCache:null,els:{a:[],p:[],r:[],w:[],s:[]}};
+
+var CPLACES=[
+ {id:"kunming",n:"昆明",lon:102.71,lat:25.04,side:"cn",dx:-2,dy:-15,showAt:0.4,hideAt:59.4},
+ {id:"nanning",n:"南宁",lon:108.32,lat:22.82,side:"cn",dx:-16,dy:-15,showAt:0.4,hideAt:59.4,hideLabelAt:40.7},
+ {id:"longzhou",n:"龙州",lon:106.85,lat:22.34,side:"cn",dx:15,dy:-6,showAt:1.0,hideAt:59.4},
+ {id:"pingxiang",n:"凭祥",lon:106.78,lat:22.13,side:"cn",dx:-30,dy:-6,showAt:59.4,hideAt:81},
+ {id:"hanoi",n:"河内",lon:105.85,lat:21.03,side:"vn",dx:17,dy:6,big:true,showAt:0.4},
+ {id:"haiphong",n:"海防",lon:106.66,lat:20.87,side:"vn",dx:17,dy:6,showAt:0.4},
+ {id:"laocai",n:"老街",lon:103.97,lat:22.44,side:"vn",dx:19,dy:9,showAt:1.0,capAt:44.5,relAt:75.3},
+ {id:"caobang",n:"高平",lon:106.25,lat:22.66,side:"vn",dx:-2,dy:-16,showAt:1.0,capAt:46.5,relAt:75.3},
+ {id:"dongdang",n:"同登",lon:106.70,lat:21.99,side:"vn",dx:-25,dy:4,showAt:59.4,hideAt:68,capAt:63.5},
+ {id:"langson",n:"谅山",lon:106.76,lat:21.86,side:"vn",dx:3,dy:19,showAt:59.4,capAt:66.3,relAt:75.3},
+ {id:"fakashan",n:"法卡山",lon:106.60,lat:22.12,side:"front",dx:-2,dy:-14,showAt:82.7,capAt:83.3},
+ {id:"laoshan",n:"老山",lon:104.55,lat:23.08,side:"front",dx:-14,dy:-13,showAt:82.7,capAt:83.9},
+ {id:"zheyinshan",n:"者阴山",lon:104.95,lat:23.12,side:"front",dx:21,dy:15,showAt:82.7,capAt:84.5}
+];
+
+var CWAY=[
+ {n:"水口",lon:106.60,lat:22.44,showAt:40.9,hideAt:59.4,dx:-20,dy:-12},
+ {n:"东溪",lon:106.42,lat:22.35,showAt:41.2,hideAt:59.4,dx:-2,dy:18},
+ {n:"柑塘",lon:103.93,lat:22.40,showAt:42.9,hideAt:59.4,dx:-4,dy:17}
+];
+
+var CARROWS=[
+ {id:"w1",d:"M121,96 L188,264 L214,306 L238,338 L245,348 L247,352 L244,360 L233,366",
+  at:41.9,dur:2.2,side:"cn",label:"西线 · 杨得志",lx:196,ly:196,off:59},
+ {id:"e1",d:"M660,326 L600,352 L548,372 L530,368 L510,356 L506,362 L492,366 L481,352 L475,336",
+  at:42.2,dur:2.4,side:"cn",label:"东线 · 许世友",lx:578,ly:302,off:59},
+ {id:"e2",d:"M535,366 L530,378 L528,388 L524,397 L520,404 L524,410 L527,414",
+  at:61.4,dur:2.0,side:"cn",label:"",lx:0,ly:0,off:72},
+ {id:"v1",d:"M452,478 L470,462 L492,444 L510,430 L520,426",
+  at:68.9,dur:1.9,side:"vn",label:"越军增援",lx:404,ly:488,off:72},
+ {id:"r1",d:"M247,352 L244,344 L238,338 L214,306 L188,264",at:73.9,dur:1.7,side:"cn",ret:true},
+ {id:"r2",d:"M475,336 L481,352 L492,366 L506,362 L510,356 L530,368 L548,372 L600,352 L660,326",at:74.3,dur:1.7,side:"cn",ret:true},
+ {id:"r3",d:"M527,414 L524,410 L520,404 L524,397 L528,388 L530,378 L535,366",at:74.7,dur:1.7,side:"cn",ret:true}
+];
+
+var CSHOTS=[
+ {at:0, date:"1979", kick:"冷开场", cx:400, cy:310, w:620, still:true,
+  title:"一场28天战争的地图推演",
+  sub:"时间、地点取自公开史料；兵力与伤亡数字均标注来源属性，不同来源口径存在差异。"},
+ {at:7, date:"1950 — 1975", kick:"援越 · 二十五年", cx:400, cy:310, w:620,
+  title:"先是中国把物资送过去",
+  sub:"抗法与抗美期间，枪炮、粮食、石油与成套设备源源南下；1965—1973 年还有 32 万工程兵与高炮部队入越南。"},
+ {at:12, date:"1975 — 1979", kick:"战前 · 战略背景", cx:400, cy:310, w:620, still:true,
+  title:"为什么是1979年",
+  sub:"越南统一后倒向苏联，主力压在柬埔寨；边境开枪开炮、越境埋雷设障，庭毫山流血、廖行哨所被炮击。"},
+ {at:17.5, date:"1979.02", kick:"双方怎么说", cx:400, cy:310, w:620, still:true,
+  title:"一边叫自卫还击，一边叫侵略",
+  sub:"中方：《是可忍，孰不可忍》；「不要越南一寸土地」。越方：谴责「武装侵略」，要求立即停止、全部撤出，并把边境事件说成「误炸」。"},
+ {at:22.5, date:"1978 下半年 — 1979.2", kick:"边境 · 越方袭扰", cx:400, cy:318, w:500,
+  title:"越境埋雷，架炮轰边",
+  sub:"越方越境埋雷、插竹签、架铁丝网，并用炮兵向中国境内村寨与哨所射击——1978年12月，廖行哨所的炮弹落点距哨所仅 1 米。"},
+ {at:27, date:"1979年初", kick:"敌情 · 越军部署", cx:400, cy:310, w:620, still:true,
+  title:"越军把精锐留在了柬埔寨",
+  sub:"北部以公安屯、地方独立团、省独立营与民兵守备，靠坑道、地雷、竹签阵拖时间等苏联施压。"},
+ {at:31.5, date:"1978.12.07", kick:"决策 · 中央军委", cx:400, cy:310, w:620, still:true,
+  title:"两个方向，两个总指挥",
+  sub:"12月7—8日中央军委定下决心：许世友指挥东线（广西），杨得志指挥西线（云南）；北方各大军区一级战备防苏。"},
+ {at:35.5, date:"1979.02.17 05:00", kick:"D日 · 炮火准备", cx:400, cy:310, w:620,
+  title:"05:00，五百公里边境线同时开火",
+  sub:"二十余分钟火力准备：火箭炮与加农炮沿边境一齐覆盖，随后步兵、坦克在广西、云南两个方向越过边界。"},
+ {at:40, date:"2.17 — 2.26", kick:"第一阶段 · 突破边境", cx:400, cy:310, w:620,
+  title:"两条轴线，同时往里压",
+  sub:"2月20日拿下老街，22日合围高平并在代乃拦下316A师增援，25日高平与柑塘矿区易手——第一阶段目标达成。"},
+ {at:47.5, date:"2.17", kick:"当天头版", cx:400, cy:310, w:620, still:true,
+  title:"开战当天，头版通栏",
+  sub:"《人民日报》以《是可忍，孰不可忍——来自中越边境的报告》刊出长篇报道，把这场战争定名为「自卫反击」。"},
+ {at:51, date:"2.18 — 2.23", kick:"纽约 · 联合国安理会", cx:400, cy:310, w:620, still:true,
+  title:"会议室里的第二战场",
+  sub:"开战前中方已先告到安理会，越方称边境事件系「误炸」；会上中方强调有限反击、任务完成即撤，越方要求立即停火，草案遭苏联否决。"},
+ {at:55.5, date:"2.17 — 2.23", kick:"棋盘之外", cx:400, cy:310, w:620, still:true,
+  title:"三个玩家，站在棋盘外面",
+  sub:"苏联在中苏边境陈兵、空运援越；美国派航母进入南海；东盟要越南从柬埔寨撤军——没有一个直接下场。"},
+ {at:59.5, date:"2.27 — 3.04", kick:"第二阶段 · 攻克谅山", cx:500, cy:400, w:330,
+  title:"谅山：河内以北最后一道门户",
+  sub:"沿凭祥—友谊关—同登一路南下。2月23日同登失守，3月2日奇穷河以北被占，3月4日全城陷落。"},
+ {at:67, date:"03.04", kick:"河内方向", cx:470, cy:452, w:340,
+  title:"谅山以南，无险可守",
+  sub:"红河三角洲平原就在眼前，距河内约130公里。河内震动，紧急布防、疏散市民，但仍不敢抽回柬埔寨主力决战。"},
+ {at:72, date:"3.05 — 3.16", kick:"第三阶段 · 交替回撤", cx:400, cy:310, w:620,
+  title:"打到谅山，然后转身",
+  sub:"3月5日外交部声明目的已达、开始撤军；3月12日东线撤完，13日西线回国，16日最后一批入境——随后沿边境一线重新构筑防御阵地。"},
+ {at:75.4, date:"3.06 — 3.16", kick:"撤离之前 · 回收与爆破", cx:400, cy:310, w:620,
+  title:"走之前，把给过的东西搬走、把能炸的炸掉",
+  sub:"撤军同时回收此前援越的物资装备，并对越北公路、桥梁、厂矿（含中国援建项目）实施爆破——越方称大量民用设施被毁。"},
+ {at:78.2, date:"3.16 之后", kick:"入境之后 · 构筑防线", cx:400, cy:310, w:620,
+  title:"退回境内，沿边重新构筑防线",
+  sub:"边防部队沿边境一线接防、构筑工事与雷场；越军则反手抢占骑线制高点——十年对峙的格局就此定型。"},
+ {at:81, date:"1979 — 1989", kick:"十年对峙", cx:360, cy:250, w:460,
+  title:"战争没有在3月16日结束",
+  sub:"越军抢占骑线制高点。1981年法卡山、1984年老山与者阴山、7·12 松毛岭大战，两山轮战打到1989年。"},
+ {at:87.5, date:"1991 — 2000", kick:"和解", cx:400, cy:320, w:620,
+  title:"从战场到口岸",
+  sub:"1991年11月关系正常化，1999年陆地边界条约，2000年北部湾划界。"},
+ {at:93, date:"1979 — 2009", kick:"尾声", cx:400, cy:333, w:680,
+  title:"一场28天的战争，十一年的对峙",
+  sub:"双方公布的伤亡数字相差甚远；陆地边界直到2008年才全部勘定。"}
+];
+
+var CSHELLS=[];
+
+var CGUNS=[
+ {x:530,y:440},
+ {x:480,y:358},
+ {x:252,y:374}
+];
+var CVOLLEY=[
+ {g:0,t:8.4,tx:536,ty:390},
+ {g:1,t:9.0,tx:462,ty:319},
+ {g:0,t:9.8,tx:516,ty:392},
+ {g:2,t:10.3,tx:242,ty:336},
+ {g:1,t:10.9,tx:462,ty:324},
+ {g:0,t:11.3,tx:546,ty:398},
+ {g:2,t:11.9,tx:258,ty:344}
+];
+var CFLIGHT=0.55, CBLAST=0.9;
+var CFA=[
+ {x1:682,y1:318,x2:435,y2:497,t0:2.6,dur:2.0},
+ {x1:121,y1:96,x2:247,y2:352,t0:3.2,dur:2.0},
+ {x1:682,y1:318,x2:516,y2:513,t0:3.8,dur:2.0}
+];
+var CMINES=[
+ {x:252,y:341,t:9.0},{x:262,y:336,t:9.4},{x:470,y:322,t:10.0},{x:486,y:328,t:10.4},
+ {x:520,y:388,t:10.9},{x:532,y:392,t:11.3}
+];
+function plen(p){ try{ return p.getTotalLength()||400; }catch(e){ return 400; } }
+function pathInfo(d){
+  var nums=(d.match(/-?\d+(?:\.\d+)?/g)||[]).map(Number);
+  var n=nums.length;
+  if(n<4) return {end:[0,0],ang:0};
+  var ex=nums[n-2],ey=nums[n-1], px=nums[n-4],py=nums[n-3];
+  return {end:[ex,ey], ang:Math.atan2(ey-py,ex-px)*180/Math.PI};
+}
+function ppoint(p,l){ try{ return p.getPointAtLength(l); }catch(e){ return null; } }
+
+function cineAspect(){
+  var st=$("cineStage");
+  var r=st?st.getBoundingClientRect():null;
+  var w=(r&&r.width)||390, h=(r&&r.height)||846;
+  return Math.max(0.3,Math.min(3,w/h));
+}
+function cineCam(shot){
+  var h=shot.w*BASE_ASPECT;
+  return [shot.cx-shot.w/2, shot.cy-h/2, shot.w, h];
+}
+function shotIndex(t){
+  var i=0;
+  for(var k=0;k<CSHOTS.length;k++){ if(t>=CSHOTS[k].at) i=k; }
+  return i;
+}
+function camAt(t){
+  var cache=cine.camCache||CSHOTS.map(cineCam);
+  var i=shotIndex(t);
+  if(i===0){
+    var z=cache[0].slice(), push=1-0.06*Math.min(1,t/4.2);
+    z[2]*=push; z[3]*=push; z[0]=CSHOTS[0].cx-z[2]/2; z[1]=CSHOTS[0].cy-z[3]/2;
+    return z;
+  }
+  var f=cache[i-1], g=cache[i];
+  var k=Math.max(0,Math.min(1,(t-CSHOTS[i].at)/1.15));
+  var e=1-Math.pow(1-k,4);
+  var w=f[2]+(g[2]-f[2])*e, h=f[3]+(g[3]-f[3])*e;
+  var cx=(f[0]+f[2]/2)+((g[0]+g[2]/2)-(f[0]+f[2]/2))*e;
+  var cy=(f[1]+f[3]/2)+((g[1]+g[3]/2)-(f[1]+f[3]/2))*e;
+  var drift=CSHOTS[i].still?0:0.013*Math.max(0,t-CSHOTS[i].at-1.2);
+  var z=Math.max(0.88,1-drift);
+  w*=z; h*=z;
+  return [cx-w/2, cy-h/2, w, h];
+}
+
+function buildShells(){
+  var seed=987654321;
+  function rnd(){ seed=(seed*48271)%2147483647; return seed/2147483647; }
+  var segs=[], total=0;
+  for(var i=0;i<BORDER.length-1;i++){
+    var a0=proj(BORDER[i][0],BORDER[i][1]), a1=proj(BORDER[i+1][0],BORDER[i+1][1]);
+    var L=Math.sqrt((a1[0]-a0[0])*(a1[0]-a0[0])+(a1[1]-a0[1])*(a1[1]-a0[1]));
+    segs.push({a:a0,b:a1,len:L,acc:total}); total+=L;
+  }
+  var N=120;
+  for(var k=0;k<N;k++){
+    var u=k/N, dist=u*total, sg=segs[0];
+    for(var j=0;j<segs.length;j++){ if(dist>=segs[j].acc) sg=segs[j]; }
+    var f=Math.min(1,(dist-sg.acc)/Math.max(1,sg.len));
+    var bx=sg.a[0]+(sg.b[0]-sg.a[0])*f, by=sg.a[1]+(sg.b[1]-sg.a[1])*f;
+    var tx=bx+(rnd()-0.5)*10, ty=by+4+rnd()*16;
+    var fx2=tx+(rnd()-0.5)*60, fy=ty-60-rnd()*50;
+    CSHELLS.push({t:35.85+u*2.55+rnd()*0.5, x1:fx2,y1:fy, x2:tx,y2:ty});
+  }
+  var demoPts=[[247,352],[244,360],[475,334],[520,404],[527,414],[492,366]];
+  demoPts.forEach(function(pt,i){
+    for(var k=0;k<2;k++){
+      CSHELLS.push({t:76.35+i*0.26+k*0.12, x1:pt[0]-0.3,y1:pt[1]-0.3, x2:pt[0],y2:pt[1], big:true});
+    }
+  });
+  CSHELLS.sort(function(a,b){return a.t-b.t;});
+}
+
+function buildCine(){
+  if(cine.built) return;
+  cine.built=true;
+  buildGeo($("c-geo"),true);
+  buildShells();
+  var gA=$("c-arrows"), gP=$("c-places"), gR=$("c-rings");
+
+  CARROWS.forEach(function(a){
+    var col=a.side==="vn"?"#5fa8d3":(a.ret?"#8496a6":"#e2543f");
+    var g=svg("g",{},gA);
+    var p=svg("path",{d:a.d,fill:"none",stroke:col,"stroke-width":2,"stroke-linecap":"round","stroke-linejoin":"round"},g);
+    var len=plen(p);
+    var head=null,dot=null,lbl=null;
+    if(!a.ret){
+      var info=pathInfo(a.d);
+      a.ang=info.ang; a.end=info.end;
+      head=svg("path",{d:"M0,0 L-11,5 L-11,-5 Z",fill:col,transform:"translate("+a.end[0]+","+a.end[1]+") rotate("+a.ang+")"},g);
+      head.style.display="none";
+      dot=svg("circle",{r:3,fill:"#fff",opacity:".95"},g); dot.style.display="none";
+      if(a.label){
+        lbl=svg("text",{x:a.lx,y:a.ly,"text-anchor":"middle",fill:a.side==="vn"?"#7cbde0":"#f0b34a"},g);
+        lbl.textContent=a.label;
+      }
+    }else{
+      var info2=pathInfo(a.d);
+      var ang2=info2.ang; a.end0=info2.end;
+      head=svg("path",{d:"M0,0 L-11,5 L-11,-5 Z",fill:col,opacity:".8",
+        transform:"translate("+info2.end[0]+","+info2.end[1]+") rotate("+ang2+")"},g);
+    }
+    cine.els.a.push({a:a,g:g,p:p,len:len,head:head,dot:dot,lbl:lbl});
+  });
+
+  CPLACES.forEach(function(pl){
+    var q=proj(pl.lon,pl.lat);
+    var g=svg("g",{},gP);
+    var dot=svg("circle",{cx:q[0],cy:q[1],r:4,fill:"#0e1720",stroke:"#5fa8d3","stroke-width":1.4},g);
+    var halo=svg("circle",{cx:q[0],cy:q[1],r:10,fill:pl.side==="vn"?"url(#bglow)":"url(#cglow)",opacity:"0"},g);
+    var t=svg("text",{x:q[0]+(pl.dx||0),y:q[1]+(pl.dy||0),"text-anchor":"middle"},g);
+    t.textContent=pl.n;
+    cine.els.p.push({pl:pl,g:g,dot:dot,halo:halo,t:t,x:q[0],y:q[1]});
+  });
+
+  CWAY.forEach(function(wp){
+    var q=proj(wp.lon,wp.lat);
+    var g=svg("g",{},gP);
+    var c=svg("circle",{cx:q[0],cy:q[1],r:2.6,fill:"#0b1219",stroke:"#8496a6","stroke-width":1.1},g);
+    var t=svg("text",{x:q[0],y:q[1]-8,"text-anchor":"middle",fill:"#8fa0b4","paint-order":"stroke",stroke:"#05090d","stroke-width":3,"stroke-linejoin":"round"},g);
+    t.textContent=wp.n;
+    cine.els.w.push({wp:wp,g:g,c:c,t:t,y:q[1],cx:q[0]});
+  });
+
+  var cFx=$("c-fx");
+  cine.defLine=svg("path",{d:defensePath(),fill:"none",stroke:"#e2543f",opacity:0,"stroke-linecap":"round"},cFx);
+  cine.defLabel=svg("text",{x:332,y:246,"text-anchor":"middle",fill:"#d99a88",opacity:0,"paint-order":"stroke",stroke:"#05090d","stroke-width":3,"stroke-linejoin":"round"},cFx);
+  cine.defLabel.textContent="边境防御线（1979.3 起）";
+  cine.demoLabel=svg("text",{x:400,y:476,"text-anchor":"middle",fill:"#f0b34a",opacity:0,"paint-order":"stroke",stroke:"#05090d","stroke-width":3,"stroke-linejoin":"round"},cFx);
+  cine.demoLabel.textContent="回收援越物资 · 爆破公路、桥梁、厂矿";
+
+  cine.planes=[];
+  CFA.forEach(function(f,fi){
+    var mx=(f.x1+f.x2)/2, my=(f.y1+f.y2)/2-40;
+    var grp=svg("g",{},cFx);
+    var trail=svg("path",{d:"M"+f.x1+","+f.y1+" Q"+mx+","+my+" "+f.x2+","+f.y2,fill:"none",stroke:"#5fa8d3","stroke-width":1.2,"stroke-dasharray":"5 5",opacity:0},grp);
+    var pg=svg("g",{},grp);
+    svg("path",{d:"M9,0 L3,-2.4 L-1,-2.4 L-1,-6 L-3,-6 L-3,-2.4 L-6.5,-2.4 L-8,-1 L-8,1 L-6.5,2.4 L-3,2.4 L-3,6 L-1,6 L-1,2.4 L3,2.4 Z",fill:"#bfe3f5"},pg);
+    pg.style.display="none";
+    var drops=[];
+    for(var di=0;di<3;di++){ var dr=svg("rect",{width:3.2,height:3.2,x:-1.6,y:-1.6,fill:"#e0b978",opacity:0},grp); dr.style.display="none"; drops.push(dr); }
+    grp.style.display="none";
+    cine.planes.push({f:f,grp:grp,trail:trail,pg:pg,drops:drops,mx:mx,my:my});
+  });
+
+  cine.guns=[];
+  CGUNS.forEach(function(g,gi){
+    var grp=svg("g",{},cFx);
+    svg("circle",{cx:g.x,cy:g.y,r:5,fill:"#12303c",stroke:"#5fa8d3","stroke-width":1.5},grp);
+    var barrel=svg("line",{x1:g.x,y1:g.y,x2:g.x,y2:g.y-18,stroke:"#9fd4ea","stroke-width":3,"stroke-linecap":"round"},grp);
+    grp.style.display="none";
+    cine.guns.push({x:g.x,y:g.y,g:grp,barrel:barrel,ang:-90});
+  });
+  cine.volleys=[];
+  CVOLLEY.forEach(function(v,vi){
+    var g=CGUNS[v.g], dx=v.tx-g.x, dy=v.ty-g.y;
+    var dist=Math.sqrt(dx*dx+dy*dy)||1;
+    var side=(vi%2===0?1:-1), bulge=Math.min(46,dist*0.5)*side;
+    var mx=(g.x+v.tx)/2 + (-dy/dist)*bulge;
+    var my=(g.y+v.ty)/2 + (dx/dist)*bulge - Math.max(40,dist*0.55);
+    var arc=svg("path",{d:"M"+g.x+","+g.y+" Q"+mx+","+my+" "+v.tx+","+v.ty,fill:"none",stroke:"#ff5a3c","stroke-linecap":"round",opacity:0},cFx);
+    cine.volleys.push({v:v,arc:arc,len:plen(arc),mx:mx,my:my});
+  });
+  cine.blasts=[];
+  for(var bi=0;bi<5;bi++){
+    var bg=svg("g",{},cFx);
+    var disc=svg("circle",{r:0,fill:"#ff8a4c",opacity:0},bg);
+    var ring=svg("circle",{r:0,fill:"none",stroke:"#ffd08a","stroke-width":2,opacity:0},bg);
+    var core=svg("circle",{r:0,fill:"#fff4d6",opacity:0},bg);
+    var sp=[];
+    for(var k2=0;k2<6;k2++){
+      sp.push(svg("line",{x1:0,y1:0,x2:0,y2:0,stroke:"#ffc27a","stroke-width":1.2,opacity:0},bg));
+    }
+    bg.style.display="none";
+    cine.blasts.push({g:bg,disc:disc,ring:ring,core:core,sp:sp});
+  }
+  cine.mines=[];
+  CMINES.forEach(function(m){
+    var c=svg("circle",{cx:m.x,cy:m.y,r:2.6,fill:"#4ade80",opacity:".95"},cFx);
+    c.style.display="none";
+    cine.mines.push({c:c,t:m.t});
+    CSHELLS.push({t:m.t, x1:m.x-0.2,y1:m.y-0.2, x2:m.x,y2:m.y});
+  });
+  cine.enemyLabel=svg("text",{x:332,y:462,"text-anchor":"middle",fill:"#f0b34a",opacity:0,"paint-order":"stroke",stroke:"#05090d","stroke-width":3,"stroke-linejoin":"round"},cFx);
+  cine.enemyLabel.textContent="越军炮兵阵地 · 越境埋雷";
+  cine.borderGlow=svg("path",{d:"M"+BORDER.map(function(pt){var q=proj(pt[0],pt[1]);return q[0].toFixed(1)+","+q[1].toFixed(1);}).join(" L"),
+    fill:"none",stroke:"#ff7a3c","stroke-width":8,opacity:0,"stroke-linecap":"round"},cFx);
+  for(var si=0;si<26;si++){
+    var ln=svg("line",{x1:0,y1:0,x2:0,y2:0,stroke:"#ffd9a6","stroke-width":1.2,"stroke-linecap":"round",opacity:"0"},cFx);
+    var fl=svg("circle",{r:0,fill:"none",stroke:"#ffb66b","stroke-width":1.1,opacity:"0"},cFx);
+    var ce=svg("circle",{r:0,fill:"#fff3d0",opacity:"0"},cFx);
+    cine.els.s.push({l:ln,f:fl,c:ce});
+  }
+
+  CPLACES.filter(function(p){return p.side==="front";}).forEach(function(pl){
+    var q=proj(pl.lon,pl.lat);
+    var c=svg("circle",{cx:q[0],cy:q[1],r:0,fill:"none",stroke:"#f0b34a","stroke-width":1.2,opacity:0},gR);
+    cine.els.r.push({pl:pl,c:c});
+  });
+}
+
+function setCaption(sh){
+  $("cDate").textContent=sh.date;
+  $("cKick").textContent=sh.kick;
+  $("cCapKick").textContent=sh.kick;
+  $("cCapTitle").textContent=sh.title;
+  $("cCapSub").textContent=sh.sub;
+  var cap=$("cCap");
+  cap.classList.remove("anim"); void cap.offsetWidth; cap.classList.add("anim");
+  boom();
+}
+
+function paintShells(t,sc){
+  var act=[],i;
+  for(i=0;i<CSHELLS.length;i++){ var d=t-CSHELLS[i].t; if(d>=0&&d<0.55) act.push(i); }
+  act.sort(function(x,y){ return (t-CSHELLS[x].t)-(t-CSHELLS[y].t); });
+  for(var k=0;k<cine.els.s.length;k++){
+    var o=cine.els.s[k];
+    if(k>=act.length){ o.l.setAttribute("opacity","0"); o.f.setAttribute("opacity","0"); o.c.setAttribute("opacity","0"); continue; }
+    var s=CSHELLS[act[k]], dd=t-s.t;
+    var tr=Math.min(1,dd/0.18);
+    var bk=Math.max(0,tr-0.4);
+    o.l.setAttribute("x1",(s.x1+(s.x2-s.x1)*bk).toFixed(1));
+    o.l.setAttribute("y1",(s.y1+(s.y2-s.y1)*bk).toFixed(1));
+    o.l.setAttribute("x2",(s.x1+(s.x2-s.x1)*tr).toFixed(1));
+    o.l.setAttribute("y2",(s.y1+(s.y2-s.y1)*tr).toFixed(1));
+    o.l.setAttribute("opacity",tr<1?"0.95":"0");
+    o.l.setAttribute("stroke-width",(2.1*sc).toFixed(2));
+    var d2=dd-0.18;
+    if(d2>0){
+      var k2=Math.min(1,d2/0.34);
+      o.f.setAttribute("cx",s.x2.toFixed(1)); o.f.setAttribute("cy",s.y2.toFixed(1));
+      o.f.setAttribute("r",(((s.big?7:4)+k2*(s.big?46:30))*sc).toFixed(2));
+      o.f.setAttribute("opacity",(1-k2).toFixed(2));
+      o.f.setAttribute("stroke-width",(1.4*sc).toFixed(2));
+      o.c.setAttribute("cx",s.x2.toFixed(1)); o.c.setAttribute("cy",s.y2.toFixed(1));
+      o.c.setAttribute("r",(((s.big?3.4:2)+k2*(s.big?15:9))*sc).toFixed(2));
+      o.c.setAttribute("opacity",Math.max(0,1-k2*1.7).toFixed(2));
+    }else{ o.f.setAttribute("opacity","0"); o.c.setAttribute("opacity","0"); }
+  }
+}
+
+function paintCine(t){
+  if(!cine.built) return;
+  var cam=camAt(t);
+  var st=$("cineStage").getBoundingClientRect();
+  var sw=(st&&st.width)||390, sh=(st&&st.height)||846;
+  var renderW=Math.min(sw,sh*BASE_ASPECT);
+  var sc=cam[2]/renderW;
+  $("cmap").setAttribute("viewBox",cam.map(function(v){return v.toFixed(1);}).join(" "));
+  cine.cam=cam;
+
+  var i=shotIndex(t);
+  if(i!==cine.shot){ cine.shot=i; setCaption(CSHOTS[i]); }
+
+  /* 炮火准备 */
+  paintShells(t,sc);
+  if(cine.borderGlow){
+    if(t>=35.6&&t<39.8){
+      cine.borderGlow.setAttribute("opacity",(0.16+0.12*Math.sin(t*26)).toFixed(2));
+      cine.borderGlow.setAttribute("stroke-width",(9*sc).toFixed(2));
+    }else cine.borderGlow.setAttribute("opacity","0");
+  }
+
+  /* 援越空运 */
+  if(cine.planes){
+    cine.planes.forEach(function(o){
+      var f=o.f, d=t-f.t0;
+      if(d<0){ o.grp.style.display="none"; return; }
+      o.grp.style.display="";
+      var k=Math.min(1,d/f.dur);
+      var u=1-k, px=u*u*f.x1+2*u*k*o.mx+k*k*f.x2, py=u*u*f.y1+2*u*k*o.my+k*k*f.y2;
+      var dx=2*u*(o.mx-f.x1)+2*k*(f.x2-o.mx), dy=2*u*(o.my-f.y1)+2*k*(f.y2-o.my);
+      var ang=Math.atan2(dy,dx)*180/Math.PI;
+      o.trail.setAttribute("opacity",(0.35*Math.min(1,(f.dur-d<0?1:1))*(d>f.dur+0.9?Math.max(0,1-(d-f.dur-0.9)/0.8):1)).toFixed(2));
+      o.trail.setAttribute("stroke-width",(1.3*sc).toFixed(2));
+      if(k<1){
+        o.pg.style.display="";
+        o.pg.setAttribute("transform","translate("+px.toFixed(1)+","+py.toFixed(1)+") rotate("+ang.toFixed(1)+") scale("+(sc*0.9).toFixed(2)+")");
+      }else{
+        o.pg.style.display="none";
+        var dd=d-f.dur;
+        if(dd<0.9){
+          for(var di2=0;di2<3;di2++){
+            var dk=Math.min(1,(dd-di2*0.08)/0.7);
+            if(dk<=0){ o.drops[di2].style.display="none"; continue; }
+            o.drops[di2].style.display="";
+            var ox=(di2-1)*7*sc, fall=18*dk*sc;
+            o.drops[di2].setAttribute("x",(f.x2+ox).toFixed(1));
+            o.drops[di2].setAttribute("y",(f.y2+fall).toFixed(1));
+            o.drops[di2].setAttribute("width",(3.4*sc).toFixed(2));
+            o.drops[di2].setAttribute("height",(3.4*sc).toFixed(2));
+            o.drops[di2].setAttribute("opacity",(1-dk).toFixed(2));
+          }
+        }else{
+          o.drops.forEach(function(dr){ dr.style.display="none"; });
+        }
+      }
+    });
+  }
+
+  /* 越方炮兵 / 地雷 */
+  if(cine.guns){
+    var vol=CVOLLEY;
+    cine.guns.forEach(function(o,gi){
+      /* 目标 = 该炮最近一次开火（含正在飞的那发） */
+      var aim=null, last=null;
+      for(var vi=0;vi<vol.length;vi++){
+        if(vol[vi].g===gi&&t>=vol[vi].t){ last=vol[vi]; if(!aim||vol[vi].t>aim.t) aim=vol[vi]; }
+      }
+      var gop=Math.min(1,Math.max(0,(t-7.6)/0.4))*Math.min(1,Math.max(0,(16.4-t)/0.8));
+      o.g.style.display=gop>0.02?"":"none";
+      if(gop<=0.02) return;
+      if(aim){
+        var ang=Math.atan2(aim.ty-o.y,aim.tx-o.x)*180/Math.PI;
+        var L=18, rec=Math.max(0,1-(t-aim.t)/0.16)*3;
+        var rad=ang*Math.PI/180;
+        o.barrel.setAttribute("x1",(o.x+Math.cos(rad)*rec).toFixed(1));
+        o.barrel.setAttribute("y1",(o.y+Math.sin(rad)*rec).toFixed(1));
+        o.barrel.setAttribute("x2",(o.x+Math.cos(rad)*(L-rec)).toFixed(1));
+        o.barrel.setAttribute("y2",(o.y+Math.sin(rad)*(L-rec)).toFixed(1));
+        o.barrel.setAttribute("stroke-width",(3*sc).toFixed(2));
+      }
+      o.g.style.opacity=(gop*0.95).toFixed(2);
+    });
+
+    cine.volleys.forEach(function(o){
+      var v=o.v, d=t-v.t;
+      if(d<0||d>1.7){ o.arc.setAttribute("opacity","0"); return; }
+      var k=Math.min(1,d/CFLIGHT);
+      o.arc.setAttribute("opacity",(d>1.25?Math.max(0,1-(d-1.25)/0.45):1).toFixed(2));
+      o.arc.setAttribute("stroke-width",(2.2*sc).toFixed(2));
+      if(k<1){
+        o.arc.setAttribute("stroke-dasharray",o.len.toFixed(1));
+        o.arc.setAttribute("stroke-dashoffset",(o.len*(1-k)).toFixed(1));
+      }else{
+        o.arc.setAttribute("stroke-dasharray",(7*sc).toFixed(2)+" "+(5*sc).toFixed(2));
+        o.arc.setAttribute("stroke-dashoffset","0");
+      }
+    });
+
+    /* 爆炸池 */
+    var actB=[];
+    CVOLLEY.forEach(function(v){ var d=t-(v.t+CFLIGHT); if(d>=0&&d<CBLAST) actB.push([d,v]); });
+    actB.sort(function(a,b){return a[0]-b[0];});
+    cine.blasts.forEach(function(b,bi){
+      if(bi>=actB.length){ b.g.style.display="none"; return; }
+      var d=actB[bi][0], v=actB[bi][1];
+      b.g.style.display="";
+      var g1=Math.min(1,d/0.2), fade=Math.max(0,1-d/CBLAST);
+      b.disc.setAttribute("cx",v.tx); b.disc.setAttribute("cy",v.ty);
+      b.disc.setAttribute("r",(24*g1*sc).toFixed(1));
+      b.disc.setAttribute("opacity",(0.22*fade).toFixed(3));
+      b.ring.setAttribute("cx",v.tx); b.ring.setAttribute("cy",v.ty);
+      b.ring.setAttribute("r",((6+27*g1)*sc).toFixed(1));
+      b.ring.setAttribute("opacity",(0.9*fade).toFixed(2));
+      b.ring.setAttribute("stroke-width",(2.6*sc).toFixed(2));
+      b.core.setAttribute("cx",v.tx); b.core.setAttribute("cy",v.ty);
+      b.core.setAttribute("r",((5*Math.max(0,1-d/0.22))*sc).toFixed(1));
+      b.core.setAttribute("opacity",Math.max(0,1-d/0.22).toFixed(2));
+      for(var si=0;si<6;si++){
+        var a2=(si/6)*Math.PI*2+0.4, r0=(6+27*g1)*sc, r1=(6+(27+14*g1)*g1)*sc;
+        b.sp[si].setAttribute("x1",(v.tx+Math.cos(a2)*r0).toFixed(1));
+        b.sp[si].setAttribute("y1",(v.ty+Math.sin(a2)*r0).toFixed(1));
+        b.sp[si].setAttribute("x2",(v.tx+Math.cos(a2)*r1).toFixed(1));
+        b.sp[si].setAttribute("y2",(v.ty+Math.sin(a2)*r1).toFixed(1));
+        b.sp[si].setAttribute("opacity",(0.8*fade).toFixed(2));
+        b.sp[si].setAttribute("stroke-width",(1.6*sc).toFixed(2));
+      }
+    });
+
+    cine.mines.forEach(function(o){
+      var vis=t>=o.t-1.1&&t<o.t;
+      o.c.style.display=vis?"":"none";
+      if(vis) o.c.setAttribute("r",(3.8*sc).toFixed(2));
+    });
+    var eon=(t>=7.8&&t<12.0)?Math.min(1,(t-7.8)/0.4)*Math.min(1,Math.max(0,(12.0-t)/0.5)):0;
+    cine.enemyLabel.setAttribute("opacity",eon.toFixed(2));
+    cine.enemyLabel.style.fontSize=(11.5*sc).toFixed(2)+"px";
+  }
+
+  /* 爆破标签 */
+  if(cine.demoLabel){
+    var dok=(t>=76.1&&t<78.7)?Math.min(1,(t-56.6)/0.5)*Math.min(1,Math.max(0,(78.7-t)/0.6)):0;
+    cine.demoLabel.setAttribute("opacity",dok.toFixed(2));
+    cine.demoLabel.style.fontSize=(11.5*sc).toFixed(2)+"px";
+  }
+
+  /* 防御线 */
+  if(cine.defLine){
+    var don=t>=78.6?Math.min(1,(t-78.6)/1.0):0;
+    cine.defLine.setAttribute("opacity",(don*0.9).toFixed(2));
+    cine.defLine.setAttribute("stroke-width",(1.9*sc).toFixed(2));
+    cine.defLine.setAttribute("stroke-dasharray",(3.5*sc).toFixed(2)+" "+(4.5*sc).toFixed(2));
+    cine.defLabel.setAttribute("opacity",(don*0.95).toFixed(2));
+    cine.defLabel.style.fontSize=(11*sc).toFixed(2)+"px";
+  }
+
+  /* 震动 + 闪光 */
+  var shake=0;
+  if(t>=35.6&&t<39.8) shake=Math.min(1,(t-35.6)/0.25)*(1-(t-35.6)/4.2)*6.5;
+  if(t>=76.3&&t<77.9) shake=Math.max(shake,3.4);
+  for(var qi=0;qi<CPLACES.length;qi++){
+    var qp=CPLACES[qi];
+    if(qp.capAt){ var qd=t-qp.capAt; if(qd>=0&&qd<0.45) shake=Math.max(shake,(1-qd/0.45)*4); }
+  }
+  $("cmap").style.transform="translate("+ (Math.sin(t*57)*shake).toFixed(2) +"px,"+ (Math.cos(t*71)*shake).toFixed(2) +"px)";
+  var flash=0;
+  if(t>=35.6&&t<36.1) flash=Math.max(flash,0.55*(1-(t-35.6)/0.5));
+  for(var qj=0;qj<CPLACES.length;qj++){
+    var qq=CPLACES[qj];
+    if(qq.capAt){ var qe=t-qq.capAt; if(qe>=0&&qe<0.28) flash=Math.max(flash,(1-qe/0.28)*0.2); }
+  }
+  $("cFlash").style.opacity=flash.toFixed(3);
+
+  /* 箭头 */
+  cine.els.a.forEach(function(o){
+    var a=o.a;
+    if(t<a.at){ o.g.style.display="none"; return; }
+    o.g.style.display="";
+    if(a.ret){
+      var rin=Math.min(1,(t-a.at)/0.55), rout=t<77.9?1:Math.max(0,1-(t-77.9)/1.2);
+      o.g.style.opacity=(rin*rout*0.6).toFixed(2);
+      o.p.setAttribute("stroke-width",2.0*sc);
+      o.p.setAttribute("stroke-dasharray",(5*sc)+" "+(4*sc));
+      o.head.setAttribute("transform","translate("+a.end0[0]+","+a.end0[1]+") scale("+sc+")");
+      return;
+    }
+    var k=Math.min(1,(t-a.at)/a.dur);
+    var aout=t<a.off?1:Math.max(0,1-(t-a.off)/1.2);
+    o.g.style.opacity=aout.toFixed(2);
+    o.p.setAttribute("stroke-dasharray",o.len.toFixed(1));
+    o.p.setAttribute("stroke-dashoffset",(o.len*(1-k)).toFixed(1));
+    o.p.setAttribute("stroke-width",2.4*sc);
+    if(o.head){
+      if(k>0.93){
+        o.head.style.display="";
+        o.head.setAttribute("transform","translate("+a.end[0]+","+a.end[1]+") rotate("+a.ang+") scale("+sc+")");
+      }else{ o.head.style.display="none"; }
+    }
+    if(o.dot){
+      if(k>0.02&&k<0.99){
+        var pt=ppoint(o.p,o.len*k);
+        if(pt){ o.dot.style.display=""; o.dot.setAttribute("cx",pt.x); o.dot.setAttribute("cy",pt.y); o.dot.setAttribute("r",3.2*sc); }
+      }else{ o.dot.style.display="none"; }
+    }
+    if(o.lbl){
+      o.lbl.style.fontSize=(11.5*sc).toFixed(2)+"px";
+      o.lbl.setAttribute("letter-spacing",(2*sc).toFixed(2));
+      var lt=t-a.at;
+      var lo=lt<6?Math.min(1,Math.max(0,(lt-0.8)/0.9)):Math.max(0,1-(lt-6)/1.2);
+      if(lt<6&&k>0.45) lo=Math.max(lo,0.9);
+      o.lbl.style.opacity=lo.toFixed(2);
+      o.lbl.style.display=lo<=0.02?"none":"";
+    }
+  });
+
+  /* 据点 */
+  cine.els.p.forEach(function(o){
+    var pl=o.pl;
+    var show=(t>=pl.showAt)&&(!pl.hideAt||t<pl.hideAt);
+    o.g.style.display=show?"":"none";
+    if(!show) return;
+    var cap=pl.capAt&&t>=pl.capAt, rel=pl.relAt&&t>=pl.relAt;
+    var fill="#0e1720", stroke="#5fa8d3", txt="#a9c2d4", glow=0;
+    if(pl.side==="cn"){ fill="#c94a34"; stroke="#ffb0a0"; txt="#e6d0c9"; }
+    else if(pl.side==="front"){ fill=cap?"#e2543f":"#101a22"; stroke=cap?"#ffb0a0":"#f0b34a"; txt=cap?"#ffd9d1":"#cfae72"; }
+    else{ if(cap){ fill=rel?"#3a2a28":"#e2543f"; stroke=rel?"#9b6a60":"#ff8f74"; txt=rel?"#9b8079":"#ffd2c6"; glow=rel?0:(t-pl.capAt<2.2?1:0.3);} }
+    o.dot.setAttribute("r",(pl.big?7:5.4)*sc);
+    o.dot.setAttribute("fill",fill);
+    o.dot.setAttribute("stroke",stroke);
+    o.dot.setAttribute("stroke-width",(0.9*sc).toFixed(2));
+    o.t.style.display=(pl.hideLabelAt&&t>=pl.hideLabelAt)?"none":"";
+    o.t.setAttribute("font-size",((pl.big?13:11.5)*sc).toFixed(2));
+    o.t.setAttribute("fill",txt);
+    o.t.setAttribute("stroke","#05090d");
+    o.t.setAttribute("stroke-width",(3.2*sc).toFixed(2));
+    o.t.setAttribute("paint-order","stroke");
+    o.t.setAttribute("stroke-linejoin","round");
+    if(glow>0){ o.halo.setAttribute("opacity",glow); o.halo.setAttribute("r",(14*sc).toFixed(1)); }
+    else o.halo.setAttribute("opacity","0");
+  });
+
+  /* 途经点 */
+  cine.els.w.forEach(function(o){
+    var show=t>=o.wp.showAt&&t<o.wp.hideAt;
+    o.g.style.display=show?"":"none";
+    if(!show) return;
+    o.c.setAttribute("r",(2.6*sc).toFixed(2));
+    o.t.setAttribute("font-size",(9.5*sc).toFixed(2));
+    o.t.setAttribute("x",(o.cx+(o.wp.dx||0)*sc).toFixed(1));
+    o.t.setAttribute("y",(o.y+(o.wp.dy||-9)*sc).toFixed(1));
+  });
+
+  /* 圈 */
+  cine.els.r.forEach(function(o){
+    var at=o.pl.capAt||0;
+    var d=t-at;
+    if(d<0){ o.c.setAttribute("opacity","0"); return; }
+    var k=d<4?(d%1.7)/1.7:0;
+    var on=d<4?1:0.35;
+    o.c.setAttribute("r",(5+k*22)*sc);
+    o.c.setAttribute("opacity",(on*(1-k)*0.75).toFixed(2));
+    o.c.setAttribute("stroke-width",(1.3*sc).toFixed(2));
+  });
+
+  /* 国名/省名随镜头缩放 */
+  var zf=cam[2]/648;
+  var gtxt=$("c-geo").querySelectorAll(".t-country,.t-prov,.t-sea");
+  for(var ti=0;ti<gtxt.length;ti++){
+    var el2=gtxt[ti];
+    var base=el2.classList.contains("t-country")?34:(el2.classList.contains("t-prov")?21:19);
+    el2.style.fontSize=(base*zf).toFixed(1)+"px";
+    el2.style.opacity=Math.max(0.18,Math.min(1,zf*1.15)).toFixed(2);
+  }
+
+  /* 档案面板 */
+  var pOn=function(id,on){ var el=$(id); if(el) el.classList.toggle("show",!!on); };
+  pOn("cBg",t>=12.9&&t<17.2);
+  pOn("cEnemy",t>=27.9&&t<31.3);
+  pOn("cPaper",t>=49.1&&t<51.0);
+  pOn("cUn",t>=52.7&&t<55.3);
+  pOn("cCards",t>=57.1&&t<59.3);
+  pOn("cAid",t>=75.9&&t<78.1);
+  pOn("cQuote",t>=18.3&&t<20.4);
+  pOn("cPaper2",t>=20.6&&t<22.4);
+  var sh=$("cShade"); if(sh) sh.classList.toggle("on",(t>=12.9&&t<17.2)||(t>=18.2&&t<22.4)||(t>=27.9&&t<31.3)||(t>=49.1&&t<59.3));
+
+  /* UI */
+  $("cBarIn").style.width=((t/CINE_DUR)*100).toFixed(2)+"%";
+  $("cTitle").classList.toggle("out",t>1.75);
+  $("cStats").classList.toggle("on",t>93.8);
+}
+
+function cineAudioOn(){
+  if(cine.muted) return;
+  try{
+    var AC=window.AudioContext||window.webkitAudioContext;
+    if(!AC) return;
+    if(!cine.ctx) cine.ctx=new AC();
+    if(cine.ctx.state==="suspended") cine.ctx.resume();
+    if(!cine.timer) cine.timer=setInterval(cineBeat,600);
+  }catch(e){}
+}
+function cineAudioOff(){
+  if(cine.timer){ clearInterval(cine.timer); cine.timer=null; }
+}
+function env(g,t0,a,d){ g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(a,t0+0.012); g.gain.exponentialRampToValueAtTime(0.0001,t0+d); }
+function shellBoom(when){
+  var c=cine.ctx; if(!c) return;
+  var src=c.createBufferSource(); src.buffer=getNoise(c);
+  var f=c.createBiquadFilter(); f.type="lowpass";
+  f.frequency.setValueAtTime(1100,when); f.frequency.exponentialRampToValueAtTime(150,when+0.38);
+  var g=c.createGain();
+  g.gain.setValueAtTime(0.0001,when); g.gain.exponentialRampToValueAtTime(0.3,when+0.012); g.gain.exponentialRampToValueAtTime(0.0001,when+0.45);
+  src.connect(f); f.connect(g); g.connect(c.destination); src.start(when); src.stop(when+0.5);
+  var o=c.createOscillator(), og=c.createGain();
+  o.type="sine"; o.frequency.setValueAtTime(92,when); o.frequency.exponentialRampToValueAtTime(30,when+0.3);
+  og.gain.setValueAtTime(0.0001,when); og.gain.exponentialRampToValueAtTime(0.2,when+0.02); og.gain.exponentialRampToValueAtTime(0.0001,when+0.4);
+  o.connect(og); og.connect(c.destination); o.start(when); o.stop(when+0.45);
+}
+var noiseBuf=null;
+function getNoise(c){
+  if(noiseBuf) return noiseBuf;
+  var len=Math.floor(c.sampleRate*0.5);
+  noiseBuf=c.createBuffer(1,len,c.sampleRate);
+  var d=noiseBuf.getChannelData(0);
+  for(var i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2);
+  return noiseBuf;
+}
+function cineBeat(){
+  var c=cine.ctx; if(!c||cine.muted) return;
+  var now=c.currentTime;
+  if(cine.t>=35.6&&cine.t<39.8){ shellBoom(now); shellBoom(now+0.15); return; }
+  return;
+  var o=c.createOscillator(), g=c.createGain();
+  o.type="sine"; o.frequency.setValueAtTime(66,now); o.frequency.exponentialRampToValueAtTime(36,now+0.16);
+  env(g,now,0.16,0.26); o.connect(g); g.connect(c.destination);
+  o.start(now); o.stop(now+0.3);
+}
+function boom(){
+  var c=cine.ctx; if(!c||cine.muted||!cine.playing) return;
+  var now=c.currentTime;
+  var o=c.createOscillator(), g=c.createGain();
+  o.type="triangle"; o.frequency.setValueAtTime(120,now); o.frequency.exponentialRampToValueAtTime(48,now+0.5);
+  env(g,now,0.22,0.7); o.connect(g); g.connect(c.destination);
+  o.start(now); o.stop(now+0.75);
+}
+
+function openCine(){
+  buildCine();
+  $("cine").classList.add("on");
+  document.body.style.overflow="hidden";
+  cine.camCache=CSHOTS.map(cineCam);
+  cine.t=0; cine.shot=-1; cine.last=0;
+  bgmReset();
+  $("cTitle").classList.remove("out");
+  $("cStats").classList.remove("on");
+  $("cPause").classList.remove("on");
+  paintCine(0);
+  playCine();
+}
+function closeCine(){
+  pauseCine(true);
+  bgmReset();
+  pageBgmPlay();
+  $("cine").classList.remove("on");
+  document.body.style.overflow="";
+  cineAudioOff();
+}
+function bgmPlay(){
+  var a=$("bgm"); if(!a) return;
+  a.muted=cine.muted;
+  try{ a.volume=0.55; }catch(e){}
+  var pr=a.play(); if(pr&&pr.catch) pr.catch(function(){});
+}
+function bgmPause(){ var a=$("bgm"); if(a){ try{ a.pause(); }catch(e){} } }
+function bgmReset(){ var a=$("bgm"); if(a){ try{ a.pause(); a.currentTime=0; }catch(e){} } }
+
+function playCine(){
+  if(cine.t>=CINE_DUR) cine.t=0;
+  cine.playing=true; cine.last=0;
+  $("cPause").classList.remove("on");
+  cineAudioOn();
+  pageBgmPause();
+  bgmPlay();
+  cancelAnimationFrame(cine.raf);
+  cine.raf=requestAnimationFrame(tick);
+}
+function pauseCine(silent){
+  cine.playing=false;
+  cancelAnimationFrame(cine.raf);
+  cineAudioOff();
+  bgmPause();
+  $("cPause").classList.add("on");
+  $("cPause").querySelector("span").textContent=cine.t>=CINE_DUR?"⟳":"▶";
+}
+function tick(ts){
+  if(!cine.playing) return;
+  if(!cine.last) cine.last=ts;
+  var dt=(ts-cine.last)/1000; cine.last=ts;
+  cine.t=Math.min(CINE_DUR,cine.t+Math.min(dt,0.12));
+  paintCine(cine.t);
+  if(cine.t>=CINE_DUR){ pauseCine(); bgmReset(); pageBgmPlay(); return; }
+  cine.raf=requestAnimationFrame(tick);
+}
+
+function bindCine(){
+  $("cClose").addEventListener("click",function(e){ e.stopPropagation(); closeCine(); });
+  $("cMute").addEventListener("click",function(e){
+    e.stopPropagation();
+    cine.muted=!cine.muted;
+    this.textContent=cine.muted?"🔇":"🔊";
+    var a=$("bgm"); if(a) a.muted=cine.muted;
+    cine.muted?cineAudioOff():cineAudioOn();
+  });
+  $("cineStage").addEventListener("click",function(e){
+    if(e.target.closest(".cine-hud")||e.target.closest(".cine-bar")) return;
+    if(cine.playing) pauseCine();
+    else if(cine.t>=CINE_DUR){ cine.t=0; cine.shot=-1; paintCine(0); playCine(); }
+    else playCine();
+  });
+  $("cBar").addEventListener("click",function(e){
+    e.stopPropagation();
+    var r=this.getBoundingClientRect();
+    cine.t=Math.max(0,Math.min(CINE_DUR,(e.clientX-r.left)/r.width*CINE_DUR));
+    cine.shot=-1; paintCine(cine.t);
+  });
+  document.addEventListener("keydown",function(e){
+    if(!$("cine").classList.contains("on")) return;
+    if(e.key==="Escape") closeCine();
+    if(e.key===" "){ e.preventDefault(); cine.playing?pauseCine():playCine(); }
+  });
+  window.__cineSeek=function(t){ cine.t=Math.max(0,Math.min(CINE_DUR,t)); cine.shot=-1; paintCine(cine.t); };
+  window.addEventListener("resize",function(){
+    if($("cine").classList.contains("on")){ cine.camCache=CSHOTS.map(cineCam); paintCine(cine.t); }
+  });
+}
+
+/* ============ 8.5 页面背景音乐 ============ */
+var pageBgm={el:null,on:true};
+function pageBgmPlay(){
+  var a=pageBgm.el; if(!a||!pageBgm.on) return;
+  try{ a.volume=0.42; }catch(e){}
+  var p=a.play(); if(p&&p.catch) p.catch(function(){});
+}
+function pageBgmPause(){ var a=pageBgm.el; if(a){ try{ a.pause(); }catch(e){} } }
+function pageBgmSync(){
+  var btn=$("vinyl"); if(!btn) return;
+  btn.classList.toggle("on",pageBgm.on);
+  btn.classList.toggle("off",!pageBgm.on);
+  var a=pageBgm.el;
+  if(!pageBgm.on) pageBgmPause();
+}
+function initPageBgm(){
+  pageBgm.el=$("pagebgm");
+  if(!pageBgm.el) return;
+  pageBgm.el.volume=0.42;
+  pageBgmPlay();
+  var kick=function(ev){
+    window.removeEventListener("pointerdown",kick);
+    window.removeEventListener("keydown",kick);
+    if(ev&&ev.target&&ev.target.closest&&ev.target.closest("#play")) return;
+    if(!cine.playing&&!$("cine").classList.contains("on")) pageBgmPlay();
+  };
+  window.addEventListener("pointerdown",kick);
+  window.addEventListener("keydown",kick);
+  $("vinyl").addEventListener("click",function(e){
+    e.stopPropagation();
+    pageBgm.on=!pageBgm.on;
+    pageBgmSync();
+    if(pageBgm.on&&!cine.playing) pageBgmPlay();
+  });
+}
+
+/* ============ 9. 启动 ============ */
+buildGeo($("geo"));
+renderEras();
+bind();
+bindCine();
+initPageBgm();
+render();
+})();
+</script>
+</body>
+</html>
