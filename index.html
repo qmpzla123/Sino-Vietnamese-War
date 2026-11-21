@@ -217,6 +217,8 @@ h2{font-size:13px;color:var(--dim);font-weight:600;letter-spacing:1px;margin:22p
 .cstat b{display:block;font-size:20px;color:var(--amber);font-variant-numeric:tabular-nums;line-height:1.2}
 .cstat span{font-size:10.5px;color:#7f92a5}
 .cine-credit{position:absolute;right:12px;bottom:10px;z-index:6;font-size:9.5px;color:#4d6070;letter-spacing:.4px;pointer-events:none}
+.cbtn.hot{border-color:#6b5424;background:#221c10;color:var(--amber);animation:tip 1.6s ease-in-out infinite}
+#cdbg{position:absolute;left:10px;bottom:14px;z-index:9;font-size:9.5px;color:#5d7183;max-width:70%;line-height:1.5;pointer-events:none;white-space:pre-wrap}
 .cine-bar{position:absolute;left:0;right:0;bottom:0;height:4px;background:#141c25;z-index:7;cursor:pointer}
 .cine-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8a6320,var(--amber))}
 .cine-pause{position:absolute;inset:0;display:none;place-items:center;z-index:3}
@@ -301,7 +303,7 @@ footer b{color:#64748b;font-weight:600}
   <header class="hd">
     <div class="hd-top">
       <div>
-        <h1>对越自卫反击战 <span>1979</span><em class="ver" id="buildTag">v30</em></h1>
+        <h1>对越自卫反击战 <span>1979</span><em class="ver" id="buildTag">v31</em></h1>
         <p class="sub">时空沙盒 · 拖动时间轴看战场变化 <em>｜越方称「北部边界保卫战」，国际通称 Sino-Vietnamese War</em></p>
       </div>
       <button class="ghost" id="infoBtn" aria-label="说明">i</button>
@@ -642,6 +644,7 @@ footer b{color:#64748b;font-weight:600}
     <div class="cine-hud">
       <span class="hud-date" id="cDate">1979.02.17</span>
       <span class="hud-kick" id="cKick">南疆 · 两个方向</span>
+      <button class="cbtn" id="cMus" aria-label="推演音乐" hidden>🎵</button>
       <button class="cbtn" id="cMute" aria-label="声音">🔊</button>
       <button class="cbtn" id="cClose" aria-label="关闭">✕</button>
     </div>
@@ -660,6 +663,7 @@ footer b{color:#64748b;font-weight:600}
     <div class="cine-pause" id="cPause"><span>▶</span></div>
     <div class="cine-credit" id="cCredit">BGM · 南疆行（激昂版）</div>
     <div class="cine-bar" id="cBar"><i id="cBarIn"></i></div>
+    <div id="cdbg"></div>
     <audio id="bgm" src="bgm.mp3" loop preload="auto"></audio>
   </div>
 </div>
@@ -2024,6 +2028,7 @@ function openCine(){
   $("cStats").classList.remove("on");
   $("cPause").classList.remove("on");
   paintCine(0);
+  if(!cine.watch) cine.watch=setInterval(bgmWatch,1500);
   playCine();
 }
 function closeCine(){
@@ -2038,7 +2043,31 @@ function bgmPlay(){
   var a=$("bgm"); if(!a) return;
   a.muted=cine.muted;
   try{ a.volume=0.55; }catch(e){}
-  var pr=a.play(); if(pr&&pr.catch) pr.catch(function(){});
+  if(a.readyState===0){ try{ a.load(); }catch(e){} }
+  cine.bgmErr="";
+  var pr=null;
+  try{ pr=a.play(); }catch(e){ cine.bgmErr=String(e&&e.name||e); }
+  if(pr&&pr.catch) pr.catch(function(e){ cine.bgmErr=String(e&&e.name||e); bgmWatch(); });
+  setTimeout(bgmWatch,900);
+}
+function bgmWatch(){
+  var a=$("bgm"); if(!a) return;
+  var onCine=$("cine").classList.contains("on");
+  var btn=$("cMus"); if(btn) btn.hidden=!(onCine&&a.paused);
+  var dbg=$("cdbg");
+  if(dbg&&/debug/.test(location.search)){
+    var pb=$("pagebgm");
+    dbg.textContent="bgm: paused="+a.paused+" ready="+a.readyState+" net="+a.networkState+" t="+a.currentTime.toFixed(1)+" vol="+a.volume+" err="+(a.error?a.error.code:"-")+" js="+(cine.bgmErr||"-")+
+      "\npage: paused="+pb.paused+" ready="+pb.readyState+" t="+pb.currentTime.toFixed(1)+" vol="+pb.volume+" err="+(pb.error?pb.error.code:"-")+" muted="+(cine.muted?"1":"0");
+  }
+}
+function bgmKick(){
+  var a=$("bgm"); if(!a) return;
+  try{ a.pause(); a.currentTime=0; a.load(); }catch(e){}
+  cine.muted=false; var m=$("cMute"); if(m) m.textContent="🔊";
+  bgmPlay();
+  cineAudioOn();
+  setTimeout(bgmWatch,700);
 }
 function bgmPause(){ var a=$("bgm"); if(a){ try{ a.pause(); }catch(e){} } }
 function bgmReset(){ var a=$("bgm"); if(a){ try{ a.pause(); a.currentTime=0; }catch(e){} } }
@@ -2060,6 +2089,7 @@ function pauseCine(silent){
   bgmPause();
   $("cPause").classList.add("on");
   $("cPause").querySelector("span").textContent=cine.t>=CINE_DUR?"⟳":"▶";
+  bgmWatch();
 }
 function tick(ts){
   if(!cine.playing) return;
@@ -2073,6 +2103,7 @@ function tick(ts){
 
 function bindCine(){
   $("cClose").addEventListener("click",function(e){ e.stopPropagation(); closeCine(); });
+  $("cMus").addEventListener("click",function(e){ e.stopPropagation(); bgmKick(); });
   $("cMute").addEventListener("click",function(e){
     e.stopPropagation();
     cine.muted=!cine.muted;
