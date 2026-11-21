@@ -303,7 +303,7 @@ footer b{color:#64748b;font-weight:600}
   <header class="hd">
     <div class="hd-top">
       <div>
-        <h1>对越自卫反击战 <span>1979</span><em class="ver" id="buildTag">v31</em></h1>
+        <h1>对越自卫反击战 <span>1979</span><em class="ver" id="buildTag">v32</em></h1>
         <p class="sub">时空沙盒 · 拖动时间轴看战场变化 <em>｜越方称「北部边界保卫战」，国际通称 Sino-Vietnamese War</em></p>
       </div>
       <button class="ghost" id="infoBtn" aria-label="说明">i</button>
@@ -2186,6 +2186,20 @@ function initPageBgm(){
     pageBgm.on=true; pageBgmSync(); pageBgmPlay(); audioTip();
   });
   setTimeout(audioTip,1200);
+  document.addEventListener("visibilitychange",function(){
+    if(!document.hidden){ setTimeout(function(){ pageBgmSync(); if(pageBgm.on&&!cine.playing&&!$("cine").classList.contains("on")) pageBgmPlay(); },250); }
+  });
+  window.addEventListener("pageshow",function(ev){
+    if(ev.persisted){ setTimeout(function(){ pageBgmSync(); if(pageBgm.on&&!cine.playing&&!$("cine").classList.contains("on")) pageBgmPlay(); },250); }
+  });
+  var cnt=0;
+  var retry=setInterval(function(){
+    cnt++;
+    var a=pageBgm.el;
+    if(a&&!a.paused) { clearInterval(retry); return; }   // 已经响起来了
+    if(cnt>10){ clearInterval(retry); return; }
+    if(pageBgm.on&&!cine.playing&&!$("cine").classList.contains("on")&&!document.hidden) pageBgmPlay();
+  },700);
 }
 
 /* ============ 9. 启动 ============ */
